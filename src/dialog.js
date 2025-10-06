@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./css/dialog.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCancel } from "@fortawesome/free-solid-svg-icons";
+import { faCancel, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Dialog = (props) => {
 
@@ -22,7 +22,7 @@ const Dialog = (props) => {
                         <h2 id="diaT">{props.msg[0]}</h2>
                         <p id="diaMgs">{props.msg[1]}</p>
                         <button onClick={closeDialog} id="readMore">
-                            <FontAwesomeIcon icon={faCancel}></FontAwesomeIcon>
+                            <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
                             <div>Close</div>
                         </button>
                     </div>
