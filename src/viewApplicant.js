@@ -3,11 +3,23 @@ import { faCircleXmark, faRightToBracket, faPrint, faFile } from '@fortawesome/f
 import './css/view.css'
 import './css/views2.css'
 import { useRef, useState } from 'react';
+import Dialog from './dialog';
+
+
 const ViewApplicant = (props) => {
     const applicant = props.applicant;
 
     const [checkSubmit, setCheckSubmit] = useState(false);
+    const [checkSubmit2, setCheckSubmit2] = useState(false);
     const formRef = useRef(null)
+
+    const [isOpen, setIsOpen] = useState(false)
+    const [showDialog, setShowDialog] = useState(false)
+    const [msg, setMsg] = useState([])
+
+    const [status1,setStatus1] = useState(false)
+    const [status2,setStatus2] = useState(false)
+
     const printForm = () => {
         const styles = Array.from(document.querySelectorAll("style, link[rel='stylesheet']"))
             .map(node => node.outerHTML)
@@ -23,9 +35,10 @@ const ViewApplicant = (props) => {
 
     const [loading, setLoading] = useState(false);
 
-    const downLoadFiles = async () => {
+    const downLoadFiles = async (uploader, uploaderId, use) => {
+        console.log(uploader + " " + uploaderId + " " + use)
         try {
-            const response = await fetch(`http://localhost:1000/files/${fileId}`);
+            const response = await fetch(`http://localhost:4000/files/${uploader}/${uploaderId}/${use}`);
 
             if (!response.ok) {
                 throw new Error("File not found");
@@ -36,24 +49,64 @@ const ViewApplicant = (props) => {
             const a = document.createElement("a");
             a.href = url;
             const contentDisposition = response.headers.get("Content-Disposition");
-            const filename = contentDisposition ? contentDisposition.split("filename=")[1]: "downloaded_file";
-            
+            const filename = `${uploader}-files`;
+
             a.download = filename;
             document.body.appendChild(a);
             a.click();
             a.remove();
             window.URL.revokeObjectURL(url);
         } catch (err) {
-            console.error(err);
-            alert(err.message);
+            setMsg(["File problem", `Can't find file`])
+            setShowDialog(true)
+            setIsOpen(true)
         } finally {
             setLoading(false);
         }
-
-
     }
+
+    const updateApplicants = async (update) => {
+        if (update === "Approved") setCheckSubmit(true);
+        else if (update === "Disapproved") setCheckSubmit2(true);
+
+        try {
+            const response = await fetch(`http://localhost:1000/underApply/${applicant._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: update })
+            });
+
+            if (!response.ok) {
+                throw new Error("Server returned an error");
+            }
+
+            setMsg([
+                "Update success",
+                `${applicant.firstName} ${applicant.surname} has been ${update}.`
+            ]);
+            setShowDialog(true);
+            setIsOpen(true);
+            //props.setRefresh(!props.refresh);
+        } catch (e) {
+            console.error(e); 
+            setMsg([
+                "Update problem",
+                `Can't update ${applicant.firstName} ${applicant.surname}. Try again later.`
+            ]);
+            setShowDialog(true);
+            setIsOpen(true);
+
+        } finally {
+            setCheckSubmit(false);
+            setCheckSubmit2(false);
+        }
+    };
+
+
     return (
         <div id='newOverlay' style={{ display: props.checkOverlay ? "flex" : "none" }} >
+            {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
+
             <div id="undergradPage">
 
                 <div className="form-container" ref={formRef}>
@@ -62,7 +115,7 @@ const ViewApplicant = (props) => {
 
                     <div id="fileNames">
                         <div id="fLeft">
-                            <div id='fileMore'>
+                            <div id='fileMore' onClick={() => { downLoadFiles(applicant.firstName + "-" + applicant.surname, applicant.uploaderId, "file1") }}>
                                 View Fee Payment Receipt
                                 <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
                             </div>
@@ -115,7 +168,7 @@ const ViewApplicant = (props) => {
 
                     <div id="fileNames">
                         <div id="fLeft">
-                            <div id='fileMore'>
+                            <div id='fileMore' onClick={() => { downLoadFiles(applicant.firstName + "-" + applicant.surname, applicant.uploaderId, "file2") }}>
                                 View Certificate
                                 <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
                             </div>
@@ -169,13 +222,13 @@ const ViewApplicant = (props) => {
                     <h2>F. Student Declaration</h2>
                     <div id="studentDetails">
                         <div id="inps"><div id='label'>Signature:</div><div>{applicant.studentDeclaration?.signature}</div></div>
-                        <div id="inps"><div id='label'>Date:</div><div>{applicant.studentDeclaration?.date}</div></div>
+                        <div id="inps"><div id='label'>Date:</div><div>{new Date(applicant.studentDeclaration?.date).toLocaleString("en-GB")}</div></div>
                     </div>
 
 
                     <div id="fileNames">
                         <div id="fLeft">
-                            <div id='fileMore'>
+                            <div id='fileMore' onClick={() => { downLoadFiles(applicant.firstName + "-" + applicant.surname, applicant.uploaderId, "file3") }}>
                                 Additional Qualifications
                                 <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
                             </div>
@@ -195,21 +248,23 @@ const ViewApplicant = (props) => {
                         <div id="inps"><div id='label'>Academic Year:</div><div>{applicant.officeUse?.academicYear}</div></div>
                         <div id="inps"><div id='label'>Application No.:</div><div>{applicant.officeUse?.applicationNo}</div></div>
                         <div id="inps"><div id='label'>Receipt No.:</div><div>{applicant.officeUse?.receiptNo}</div></div>
-                        <div id="inps"><div id='label'>Review Date:</div><div>{applicant.officeUse?.reviewDate}</div></div>
+                        <div id="inps"><div id='label'>Review Date:</div><div>{new Date(applicant.officeUse?.reviewDate).toLocaleString("en-GB")}</div></div>
                         <div id="inps"><div id='label'>Approved:</div><div>{applicant.officeUse?.approved ? "Yes" : "No"}</div></div>
                         <div id="inps"><div id='label'>Student No.:</div><div>{applicant.officeUse?.studentNo}</div></div>
                         <div id="inps"><div id='label'>Admin Signature:</div><div>{applicant.officeUse?.signature}</div></div>
                     </div>
 
                     <div id="downButt">
-                        <button type="submit" className="submit-btn">
+                        <button type="submit" id='submit1' className="submit-btn" onClick={() => { updateApplicants("Approved") }} disabled={applicant.status === "Approved" ? true : false}>
                             {checkSubmit ? "Approving..." : "Approve"}
                             {checkSubmit ? <div className="loader"></div> : <FontAwesomeIcon icon={faRightToBracket} />}
                         </button>
-                        <button type="submit2" id='submit2'>
-                            {checkSubmit ? "Disapproving..." : "Disapprove"}
-                            {checkSubmit ? <div className="loader"></div> : <FontAwesomeIcon icon={faRightToBracket} />}
+
+                        <button type="submit2" id='submit2' onClick={() => { updateApplicants("Disapproved") }} disabled={applicant.status === "Disapproved" ? true : false}>
+                            {checkSubmit2 ? "Disapproving..." : "Disapprove"}
+                            {checkSubmit2 ? <div className="loader"></div> : <FontAwesomeIcon icon={faRightToBracket} />}
                         </button>
+                        
                         <button type="button3" className="submit-btn" onClick={printForm}>
                             <div>Print</div>
                             <FontAwesomeIcon icon={faPrint} />

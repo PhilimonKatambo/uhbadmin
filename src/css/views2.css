@@ -263,6 +263,11 @@ td {
     gap: 5px;
 }
 
+#submit1:disabled,#submit2:disabled{
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 .loader {
     width: 20px;
     --b: 8px;

@@ -7,18 +7,26 @@ body {
 #body {
     display: flex;
     flex-direction: row;
+    gap: 30px;
 }
 
+#leftSideT{
+    width: 20vw;
+    background-color: #1f9cf1;
+}
 #leftSide {
     display: flex;
     flex-direction: column;
     width: 20vw;
     background-color: #25517e;
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     gap: 10px;
     height: 100vh;
-    justify-content: space-around;
+    justify-content:space-between;
     position: fixed;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    
 }
 
 #upSideBar {
@@ -26,6 +34,12 @@ body {
     gap: 10px;
     align-items: center;
     margin-bottom: 30px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    position: fixed;
+    background-color: #25517e;
+    border-bottom: 1px solid #1f9cf1;
+    z-index: 100;
 }
 
 #schoolLogo {
@@ -40,6 +54,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    margin-top: 150px;
 }
 
 #schoolName {
@@ -56,10 +71,25 @@ body {
     font-size: 1rem;
     align-items: center;
     padding: 5px 5px 20px 5px;
+    border: 0px;
     border-bottom: 1px solid #fcfbf8;
     cursor: pointer;
     transition: all .5s ease;
     border-radius: 10px;
+    background-color: #25517e;
+}
+
+#headAcc{
+    border: 0px;
+}
+
+#headSchools{
+    background-color: #25517e;
+    border: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: fit-content;
 }
 
 #section:hover {
@@ -78,7 +108,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin-left: 280px;
 }
 
 #sectionCards{
@@ -157,6 +186,17 @@ body {
     gap: 20px;
 }
 
+#rightDown2 {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #fcfbf8;
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 0px #25517e;
+    gap: 20px;
+    height: fit-content;
+}
+
 #rightUp {
     display: flex;
     justify-content: space-between;
@@ -202,6 +242,20 @@ body {
     transition: all .5s ease;
 }
 
+#disapprove {
+    background-color: #e9254e;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 0px;
+    width: fit-content;
+    color: #fcfbf8;
+    font-weight: 600;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    transition: all .5s ease;
+}
+
 #deny {
     background-color: #e9254e;
     padding: 5px 10px;
@@ -217,20 +271,22 @@ body {
 }
 
 #accept:hover,
+#disapprove:hover,
 #recommend:hover,
 #deny:hover {
     opacity: 0.7;
 }
 
 #accept:disabled,
+#disapprove:disabled,
 #recommend:disabled,
 #deny:disabled{
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.5;
 }
 #table {
     width: 100%;
-    max-height: 300px;
+    max-height: 100vh;
     overflow-x: scroll;
     scrollbar-width: none;
     transition: all 0.5s ease;
