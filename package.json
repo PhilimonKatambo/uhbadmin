@@ -12,6 +12,7 @@
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "animejs": "^4.2.2",
     "jquery": "^3.7.1",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "react": "^19.1.1",

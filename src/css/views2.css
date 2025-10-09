@@ -2,7 +2,7 @@
 #undergradPage {
     display: flex;
     flex-direction: column;
-    
+
 }
 
 .form-container {
@@ -112,7 +112,7 @@ td {
     opacity: 0.8;
 }
 
-#submit2{
+#submit2 {
     margin-top: 20px;
     padding: 10px 20px;
     background: #e9254e;
@@ -130,7 +130,7 @@ td {
     transition: all 0.5s ease;
 }
 
-#submit2:hover{
+#submit2:hover {
     opacity: 0.7;
 }
 
@@ -188,7 +188,7 @@ td {
     transition: all .5s ease;
 }
 
-#fileMore:hover{
+#fileMore:hover {
     opacity: 0.7;
 }
 
@@ -252,20 +252,25 @@ td {
     opacity: 0.4;
 }
 
-#offece1{
+#offece1 {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-#inps2{
+#inps2 {
     display: flex;
     gap: 5px;
 }
 
-#submit1:disabled,#submit2:disabled{
+#submit1:disabled,
+#submit2:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+}
+
+#refresh {
+    color: grey;
 }
 
 .loader {
@@ -282,10 +287,56 @@ td {
     animation: l5 1s infinite;
 }
 
+/* HTML: <div class="loader"></div> */
+#loadingFetch {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 50px 200px;
+    align-items: center;
+}
+
+#loader {
+    --d: 22px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    color: #004ea1;
+    box-shadow:
+        calc(1*var(--d)) calc(0*var(--d)) 0 0,
+        calc(0.707*var(--d)) calc(0.707*var(--d)) 0 1px,
+        calc(0*var(--d)) calc(1*var(--d)) 0 2px,
+        calc(-0.707*var(--d)) calc(0.707*var(--d)) 0 3px,
+        calc(-1*var(--d)) calc(0*var(--d)) 0 4px,
+        calc(-0.707*var(--d)) calc(-0.707*var(--d))0 5px,
+        calc(0*var(--d)) calc(-1*var(--d)) 0 6px;
+    animation: l27 1s infinite steps(8);
+}
+
+#getFetch {
+    font-size: large;
+    font-weight: bold;
+    color: #014080;
+}
+
+#noData {
+    font-size: large;
+    font-weight: bold;
+    color: #004ea1;
+}
+
+@keyframes l27 {
+    100% {
+        transform: rotate(1turn)
+    }
+}
+
 @keyframes glow3 {
     0% {
         padding: 5px;
     }
+
     100% {
         padding: 10px;
     }
@@ -314,15 +365,18 @@ td {
 }
 
 @media (max-width: 768px) {
-    #fileNames,#studentDetails {
+
+    #fileNames,
+    #studentDetails {
         flex-direction: column;
     }
 
-    #inps{
+    #inps {
         width: 100%;
         justify-content: space-between;
     }
-    #inps2{
+
+    #inps2 {
         flex-direction: column;
     }
 }

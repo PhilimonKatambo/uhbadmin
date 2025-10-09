@@ -62,8 +62,24 @@
     transition: all 0.5s ease
 }
 
-#readMore:hover {
-    background: linear-gradient(to right, #004ea1, #0158b5);
+#readMore2 {
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    border: 0px;
+    border-radius: 10px;
+    padding: 10px 10px;
+    display: flex;
+    gap: 10px;
+    background: linear-gradient(to right, #b50131, red);
+    align-items: center;
+    color: #fcfbf8;
+    font-weight: bold;
+    transition: all 0.5s ease
+}
+
+#readMore:hover,#readMore2:hover {
+    /* background: linear-gradient(to right, #004ea1, #0158b5); */
     gap: 2px;
     opacity: 0.9;
     box-shadow: 0px 0px 3px 0px #004ea1;

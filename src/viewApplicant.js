@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faRightToBracket, faPrint, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faRightToBracket, faPrint, faFile, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import './css/view.css'
 import './css/views2.css'
 import { useRef, useState } from 'react';
@@ -19,6 +19,7 @@ const ViewApplicant = (props) => {
 
     const [status1,setStatus1] = useState(false)
     const [status2,setStatus2] = useState(false)
+    
 
     const printForm = () => {
         const styles = Array.from(document.querySelectorAll("style, link[rel='stylesheet']"))
@@ -44,7 +45,9 @@ const ViewApplicant = (props) => {
                 throw new Error("File not found");
             }
 
+            
             const blob = await response.blob();
+            console.log(blob)
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
@@ -95,7 +98,6 @@ const ViewApplicant = (props) => {
             ]);
             setShowDialog(true);
             setIsOpen(true);
-
         } finally {
             setCheckSubmit(false);
             setCheckSubmit2(false);
@@ -262,7 +264,7 @@ const ViewApplicant = (props) => {
 
                         <button type="submit2" id='submit2' onClick={() => { updateApplicants("Disapproved") }} disabled={applicant.status === "Disapproved" ? true : false}>
                             {checkSubmit2 ? "Disapproving..." : "Disapprove"}
-                            {checkSubmit2 ? <div className="loader"></div> : <FontAwesomeIcon icon={faRightToBracket} />}
+                            {checkSubmit2 ? <div className="loader"></div> : <FontAwesomeIcon icon={faThumbsDown} />}
                         </button>
                         
                         <button type="button3" className="submit-btn" onClick={printForm}>

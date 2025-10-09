@@ -1,15 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './css/dashboard.css';
-import { fa1, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faGraduationCap, faRightFromBracket, faSearch, faSquareCheck, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
+import { fa1, faBan, faCheckDouble, faCheckToSlot, faComputer, faDeleteLeft, faEye, faEyeDropper, faGraduationCap, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { faFirstOrderAlt } from '@fortawesome/free-brands-svg-icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Dialog from './dialog';
 import ViewApplicant from './viewApplicant';
 import $ from "jquery"
 import "jquery-ui-bundle";
 import "jquery-ui-bundle/jquery-ui.css";
 import { LeftSideBar } from './dashboard';
+import { animate, stagger } from "animejs";
 
 const Reception = () => {
     return (
@@ -30,6 +31,11 @@ const ReceRight = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
     const [msg, setMessage] = useState([])
+
+    const [isOpen2, setIsOpen2] = useState(false);
+    const [showDialog2, setShowDialog2] = useState(false);
+    const [msg2, setMessage2] = useState([])
+    const [typa, setTypa] = useState('normal')
 
     const [refresh, setRefresh] = useState(false)
 
@@ -120,6 +126,56 @@ const ReceRight = () => {
         }
     }
 
+    const [loader, setLoader] = useState(false);
+
+    const deleteFirst = async () => {
+        try {
+            setLoader(true)
+            await Promise.all(
+                selected.map(async (applicant) => {
+                    const response = await fetch(`http://localhost:1000/applicants/${applicant._id}`, {
+                        method: "DELETE",
+                    });
+                    if (!response.ok) {
+                        console.error(`Failed to delete files for ${applicant._id}`);
+                    }
+                })
+            );
+            deleteApplicants()
+            // setRefresh(prev => !prev);
+            // setSelected([]);
+        } catch (e) {
+            openDialog();
+            setMessage(["Deleting problem", `Can't be deleted, try again later`]);
+        }
+    }
+
+    const deleteApplicants = async () => {
+        try {
+            await Promise.all(
+                selected.map(async (applicant) => {
+                    console.log(applicant.uploaderId)
+                    const response = await fetch(`http://localhost:4000/files/${applicant.uploaderId}`, {
+                        method: "DELETE",
+                    });
+                    if (!response.ok) {
+                        console.error(`Failed to delete files for ${applicant.uploaderId}`);
+                    }
+                })
+            );
+            setRefresh(prev => !prev);
+            setSelected([]);
+            openDialog();
+            setMessage(["Deleting", 'Selected applicants are deleted']);
+            setLoader(false)
+        } catch (e) {
+            openDialog();
+            setMessage(["Deleting problem", `Can't be deleted, try again later`]);
+            setLoader(false)
+        }
+    };
+
+
     useEffect(() => {
         setApplicants(applicants || []);
         // $(function () {
@@ -128,6 +184,8 @@ const ReceRight = () => {
         //     });
         // });
     }, [applicants, autoComplete])
+
+
 
     const check = (main, sub) => {
         main = main.toLowerCase();
@@ -150,8 +208,58 @@ const ReceRight = () => {
     const [checkOverlay, setOverlay] = useState(false)
     const [view, setView] = useState([]);
 
+    const reload = useRef(null)
+
+    const refreshed = () => {
+        setRefresh(!refresh);
+        animate(reload.current, {
+            duration: 1200,
+            easing: "easeOutExpo",
+            keyframes: [
+                { opacity: 0, rotate: 360 },
+                { opacity: 1, rotate: 0 }
+            ],
+        });
+    }
+
+    const openDialog2 = () => {
+        setShowDialog2(true);
+        setTimeout(() => setIsOpen2(true), 10);
+    }
+
+    const closeDialog2 = () => {
+        setIsOpen2(false);
+        setTimeout(() => setShowDialog2(false), 300);
+        setTypa('normal')
+    };
+
     return (
         <div id='rightSide'>
+            {/* delete dialog */}
+            <div style={{ display: isOpen2 ? "block" : "none" }}>
+                {showDialog2 && (
+                    <div className={`dialog-overlay ${isOpen2 ? "open" : ""}`}>
+                        <div className={`dialog-box ${isOpen2 ? "open" : ""}`}>
+                            <h2 id="diaT">{msg2[0]}</h2>
+                            <p id="diaMgs">{msg2[1]}</p>
+                            <div id='buttsdia'>
+                                <button onClick={closeDialog2} id="readMore">
+                                    <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
+                                    <div>Close</div>
+                                </button>
+                                {typa === "delete" ? <button onClick={() => {
+                                    deleteFirst();
+                                    closeDialog2()
+                                }} id="readMore2" style={{backgroundColor:"red"}}>
+                                    <FontAwesomeIcon icon={faTrashCan}></FontAwesomeIcon>
+                                    <div>Yes</div>
+                                </button> : <div></div>}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <div id='rightDown2'>
                 <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={refresh} setRefresh={setRefresh} />
                 {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
@@ -172,6 +280,15 @@ const ReceRight = () => {
                             <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
                             <div id='approve'>Disapprove</div>
                         </button>
+
+                        <button id='delete' disabled={selected.length > 0 ? false : true} onClick={() => {
+                            setTypa("delete")
+                            setMessage2(["Confirm", `Are your sure, deleting ${selected.length === 1 ? "1 applicant" : selected.length + " applicants"} `]);
+                            openDialog2()
+                        }}>
+                            {loader ? <div class='loader'></div> : <FontAwesomeIcon icon={faTrashCan}></FontAwesomeIcon>}
+                            {loader ? <div id='approve'>Deleting...</div> : <div id='approve'>Delete</div>}
+                        </button>
                     </div>
                 </div>
 
@@ -181,6 +298,7 @@ const ReceRight = () => {
                         <button id='butts' onClick={() => setStatus("Inactive")} style={{ color: status1 === "Inactive" ? "#25517e" : "grey" }}>Inactive</button>
                         <button id='butts' onClick={() => setStatus("Approved")} style={{ color: status1 === "Approved" ? "#25517e" : "grey" }}>Approved</button>
                         <button id='butts' onClick={() => setStatus("Disapproved")} style={{ color: status1 === "Disapproved" ? "#25517e" : "grey" }}>Disapproved</button>
+                        <FontAwesomeIcon icon={faRefresh} ref={reload} onClick={refreshed} id='refresh'></FontAwesomeIcon>
                     </div>
                     <div id='otherRight'>
                         {selected.length} Selected
@@ -239,8 +357,11 @@ const ReceRight = () => {
                                             <td>{applicant.nationality}</td>
                                             <td>{applicant.phoneHome}</td>
                                         </tr>
-                                        : null
-                                )) : <div>No data</div>
+                                        : null //<div id='noData'>There is no applicants here</div>
+                                )) : <div id='loadingFetch'>
+                                    <div id='loader'></div>
+                                    <div id='getFetch'>Loading...</div>
+                                </div>
                         }
 
                     </table>

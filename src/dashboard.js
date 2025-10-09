@@ -28,15 +28,15 @@ const LeftSideBar = () => {
 
     useEffect(() => {
         $("#headAcc").accordion({
-            collapsible:true,
-            icons:false,
-            active:false
+            collapsible: true,
+            icons: false,
+            active: false
         });
 
         $("#headAcc2").accordion({
-            collapsible:true,
-            icons:false,
-            active:false
+            collapsible: true,
+            icons: false,
+            active: false
         })
     })
     return (
@@ -92,7 +92,7 @@ const LeftSideBar = () => {
                         <div id='secWord'>Manage News</div>
                     </div>
                 </div>
-                
+
                 <div id='section'>
                     <FontAwesomeIcon icon={faRightFromBracket} id='icon'></FontAwesomeIcon>
                     <div id='secWord'>Log Out</div>
@@ -295,14 +295,9 @@ const RightSideDown = (props) => {
                     <FontAwesomeIcon icon={faSearch} id='searchIcon'></FontAwesomeIcon>
                 </div>
                 <div id='ops'>
-                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Approved")}>
+                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Accepted")}>
                         <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
-                        <div id='approve'>Approve</div>
-                    </button>
-
-                    <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Disapproved")}>
-                        <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
-                        <div id='approve'>Disapprove</div>
+                        <div id='approve'>accept</div>
                     </button>
 
                     <button id='recommend' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Recommended")}>
@@ -319,8 +314,7 @@ const RightSideDown = (props) => {
             <div id='otherButtons'>
                 <div id='otherLeft'>
                     <button id='butts' onClick={() => setStatus("All")} style={{ color: status1 === "All" ? "#25517e" : "grey" }}>All</button>
-                    <button id='butts' onClick={() => setStatus("Approved")} style={{ color: status1 === "Approved" ? "#25517e" : "grey" }}>Approved</button>
-                    <button id='butts' onClick={() => setStatus("Disapproved")} style={{ color: status1 === "Disapproved" ? "#25517e" : "grey" }}>Disapproved</button>
+                    <button id='butts' onClick={() => setStatus("Accepted")} style={{ color: status1 === "Accepted" ? "#25517e" : "grey" }}>Accepted</button>
                     <button id='butts' onClick={() => setStatus("Recommended")} style={{ color: status1 === "Recommended" ? "#25517e" : "grey" }}>Recommended</button>
                     <button id='butts' onClick={() => setStatus("Denied")} style={{ color: status1 === "Denied" ? "#25517e" : "grey" }}>Denied</button>
                 </div>
@@ -356,7 +350,7 @@ const RightSideDown = (props) => {
                     {
                         applicants.length > 0 ?
                             applicants.map((applicant, index) => (
-                                (status1 != "All" || applicant.status === status1 && status1 != "Inactive") &&
+                                (status1 === "All" || applicant.status === status1) &&
                                     applicant.academicDetails[0].programme === props.mode ? (
                                     <tr key={applicant._id}>
                                         <td>
@@ -383,9 +377,11 @@ const RightSideDown = (props) => {
                                         <td>{applicant.phoneHome}</td>
                                     </tr>
                                 ) : null
-                            )) : <div>No data</div>
+                            )) : <div id='loadingFetch'>
+                                <div id='loader'></div>
+                                <div id='getFetch'>Loading...</div>
+                            </div>
                     }
-
                 </table>
             </div>
         </div>
