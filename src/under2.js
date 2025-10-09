@@ -12,95 +12,15 @@ import "jquery-ui-bundle/jquery-ui.css";
 import Reception from './Reception';
 import { useNavigate } from 'react-router-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core';
+import { LeftSideBar } from './dashboard';
 import Delete2 from './delete';
 
 
-const DashBoard = () => {
+const DashBoard2 = () => {
     return (
         <div id='body'>
             <LeftSideBar />
             <RightSide />
-        </div>
-    )
-}
-
-const LeftSideBar = () => {
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        $("#headAcc").accordion({
-            collapsible: true,
-            icons: false,
-            active: false
-        });
-
-        $("#headAcc2").accordion({
-            collapsible: true,
-            icons: false,
-            active: false
-        })
-    })
-
-
-    return (
-        <div id='leftSideT'>
-            <div id='leftSide'>
-                <div id='upSideBar'>
-                    <img src='./assets/logos/logo3.jpg' id='schoolLogo'></img>
-                    <div id='schoolName'>
-                        University Of Hebron
-                    </div>
-                </div>
-                <div id='sections'>
-                    <div id='section' onClick={() => { navigate("/") }}>
-                        <FontAwesomeIcon icon={faComputer} id='icon'></FontAwesomeIcon>
-                        <div id='secWord'>Reception</div>
-                    </div>
-                    <div id='headAcc'>
-                        <div id='section'>
-                            <FontAwesomeIcon icon={faHeading} id='icon'></FontAwesomeIcon>
-                            <div id='secWord'>Head of Schools</div>
-                        </div>
-                        <div id='headSchools'>
-                            <div id='section' onClick={() => { navigate("/UnderGraduate") }}>
-                                <FontAwesomeIcon icon={faUserGraduate} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>UnderGraduate Applications</div>
-                            </div>
-                            <div id='section' onClick={() => { navigate("/PostGraduate") }}>
-                                <FontAwesomeIcon icon={faGraduationCap} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>PostGraduate Applications</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id='headAcc2'>
-                        <div id='section'>
-                            <FontAwesomeIcon icon={faAddressCard} id='icon'></FontAwesomeIcon>
-                            <div id='secWord'>Registrar</div>
-                        </div>
-                        <div id='headSchools'>
-                            <div id='section' onClick={() => { navigate("/UnderGraduate2") }}>
-                                <FontAwesomeIcon icon={faUserGraduate} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>UnderGraduate Applications</div>
-                            </div>
-                            <div id='section' onClick={() => { navigate("/PostGraduate2") }}>
-                                <FontAwesomeIcon icon={faGraduationCap} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>PostGraduate Applications</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id='section' onClick={()=>{navigate("/News")}}>
-                        <FontAwesomeIcon icon={faNewspaper} id='icon'></FontAwesomeIcon>
-                        <div id='secWord'>Manage News</div>
-                    </div>
-                </div>
-
-                <div id='section'>
-                    <FontAwesomeIcon icon={faRightFromBracket} id='icon'></FontAwesomeIcon>
-                    <div id='secWord'>Log Out</div>
-                </div>
-            </div>
         </div>
     )
 }
@@ -282,9 +202,8 @@ const RightSideDown = (props) => {
     }
 
 
-
     const setRefresh = props.setRefresh;
-    const [loader,setLoader] = useState()
+    const [loader, setLoader] = useState()
     const [checkOverlay, setOverlay] = useState(false)
     const [view, setView] = useState([]);
 
@@ -296,13 +215,12 @@ const RightSideDown = (props) => {
         setShowDialog2(true);
         setTimeout(() => setIsOpen2(true), 10);
     }
-
     return (
         <div id='rightDown'>
+
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
             {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
-
             <div id='rightUp'>
                 <div id='name'>{props.mode}</div>
                 <div id='search'>
@@ -310,14 +228,9 @@ const RightSideDown = (props) => {
                     <FontAwesomeIcon icon={faSearch} id='searchIcon'></FontAwesomeIcon>
                 </div>
                 <div id='ops'>
-                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Accepted")}>
+                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Offered")}>
                         <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
-                        <div id='approve'>accept</div>
-                    </button>
-
-                    <button id='recommend' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Recommended")}>
-                        <FontAwesomeIcon icon={faCheckDouble}></FontAwesomeIcon>
-                        <div id='approve'>Recommend</div>
+                        <div id='approve'>Send offer letter</div>
                     </button>
                     <button id='deny' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Denied")}>
                         <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>
@@ -338,6 +251,7 @@ const RightSideDown = (props) => {
                     <button id='butts' onClick={() => setStatus("All")} style={{ color: status1 === "All" ? "#25517e" : "grey" }}>All</button>
                     <button id='butts' onClick={() => setStatus("Accepted")} style={{ color: status1 === "Accepted" ? "#25517e" : "grey" }}>Accepted</button>
                     <button id='butts' onClick={() => setStatus("Recommended")} style={{ color: status1 === "Recommended" ? "#25517e" : "grey" }}>Recommended</button>
+                    <button id='butts' onClick={() => setStatus("Offered")} style={{ color: status1 === "Offered" ? "#25517e" : "grey" }}>Offered</button>
                     <button id='butts' onClick={() => setStatus("Denied")} style={{ color: status1 === "Denied" ? "#25517e" : "grey" }}>Denied</button>
                 </div>
                 <div id='otherRight'>
@@ -410,5 +324,4 @@ const RightSideDown = (props) => {
     )
 }
 
-export { LeftSideBar }
-export default DashBoard
+export default DashBoard2

@@ -12,10 +12,11 @@ import "jquery-ui-bundle/jquery-ui.css";
 import Reception from './Reception';
 import { useNavigate } from 'react-router-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core';
+import { LeftSideBar } from './dashboard';
 import Delete2 from './delete';
 
 
-const DashBoard = () => {
+const PostG = () => {
     return (
         <div id='body'>
             <LeftSideBar />
@@ -24,86 +25,7 @@ const DashBoard = () => {
     )
 }
 
-const LeftSideBar = () => {
-    const navigate = useNavigate()
 
-    useEffect(() => {
-        $("#headAcc").accordion({
-            collapsible: true,
-            icons: false,
-            active: false
-        });
-
-        $("#headAcc2").accordion({
-            collapsible: true,
-            icons: false,
-            active: false
-        })
-    })
-
-
-    return (
-        <div id='leftSideT'>
-            <div id='leftSide'>
-                <div id='upSideBar'>
-                    <img src='./assets/logos/logo3.jpg' id='schoolLogo'></img>
-                    <div id='schoolName'>
-                        University Of Hebron
-                    </div>
-                </div>
-                <div id='sections'>
-                    <div id='section' onClick={() => { navigate("/") }}>
-                        <FontAwesomeIcon icon={faComputer} id='icon'></FontAwesomeIcon>
-                        <div id='secWord'>Reception</div>
-                    </div>
-                    <div id='headAcc'>
-                        <div id='section'>
-                            <FontAwesomeIcon icon={faHeading} id='icon'></FontAwesomeIcon>
-                            <div id='secWord'>Head of Schools</div>
-                        </div>
-                        <div id='headSchools'>
-                            <div id='section' onClick={() => { navigate("/UnderGraduate") }}>
-                                <FontAwesomeIcon icon={faUserGraduate} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>UnderGraduate Applications</div>
-                            </div>
-                            <div id='section' onClick={() => { navigate("/PostGraduate") }}>
-                                <FontAwesomeIcon icon={faGraduationCap} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>PostGraduate Applications</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id='headAcc2'>
-                        <div id='section'>
-                            <FontAwesomeIcon icon={faAddressCard} id='icon'></FontAwesomeIcon>
-                            <div id='secWord'>Registrar</div>
-                        </div>
-                        <div id='headSchools'>
-                            <div id='section' onClick={() => { navigate("/UnderGraduate2") }}>
-                                <FontAwesomeIcon icon={faUserGraduate} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>UnderGraduate Applications</div>
-                            </div>
-                            <div id='section' onClick={() => { navigate("/PostGraduate2") }}>
-                                <FontAwesomeIcon icon={faGraduationCap} id='icon'></FontAwesomeIcon>
-                                <div id='secWord'>PostGraduate Applications</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id='section' onClick={()=>{navigate("/News")}}>
-                        <FontAwesomeIcon icon={faNewspaper} id='icon'></FontAwesomeIcon>
-                        <div id='secWord'>Manage News</div>
-                    </div>
-                </div>
-
-                <div id='section'>
-                    <FontAwesomeIcon icon={faRightFromBracket} id='icon'></FontAwesomeIcon>
-                    <div id='secWord'>Log Out</div>
-                </div>
-            </div>
-        </div>
-    )
-}
 
 const RightSide = () => {
     const [applicants, setApplicants] = useState([])
@@ -125,7 +47,7 @@ const RightSide = () => {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await fetch('http://localhost:1000/applicants', {
+                const response = await fetch('http://localhost:2000/postgradApplicants', {
                     method: 'Get',
                 });
                 if (!response.ok) {
@@ -171,7 +93,7 @@ const XoolCard = (props) => {
 
     useEffect(() => {
         props.applicants.forEach(element => {
-            if (element.academicDetails[0].programme === props.xool) {
+            if (element.programme === props.xool) {
                 number += 1;
             }
         });
@@ -231,7 +153,7 @@ const RightSideDown = (props) => {
             for (const applicant of selected) {
                 applicant.status = update
 
-                const response = await fetch(`http://localhost:1000/underApply/${applicant._id}`, {
+                const response = await fetch(`http://localhost:2000/postgradApply/${applicant._id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -284,7 +206,7 @@ const RightSideDown = (props) => {
 
 
     const setRefresh = props.setRefresh;
-    const [loader,setLoader] = useState()
+    const [loader, setLoader] = useState()
     const [checkOverlay, setOverlay] = useState(false)
     const [view, setView] = useState([]);
 
@@ -302,7 +224,6 @@ const RightSideDown = (props) => {
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
             {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
-
             <div id='rightUp'>
                 <div id='name'>{props.mode}</div>
                 <div id='search'>
@@ -330,6 +251,7 @@ const RightSideDown = (props) => {
                         {loader ? <div class='loader'></div> : <FontAwesomeIcon icon={faTrashCan}></FontAwesomeIcon>}
                         {loader ? <div id='approve'>Deleting...</div> : <div id='approve'>Delete</div>}
                     </button>
+
                 </div>
             </div>
 
@@ -373,7 +295,7 @@ const RightSideDown = (props) => {
                         applicants.length > 0 ?
                             applicants.map((applicant, index) => (
                                 (status1 === "All" || applicant.status === status1) &&
-                                    applicant.academicDetails[0].programme === props.mode ? (
+                                    applicant.programme === props.mode ? (
                                     <tr key={applicant._id}>
                                         <td>
                                             <button onClick={(e) => { changeCheck(e.target, applicant) }} style={{ border: "0px", color: "rgb(128, 128, 128)", padding: "0px" }}>
@@ -410,5 +332,4 @@ const RightSideDown = (props) => {
     )
 }
 
-export { LeftSideBar }
-export default DashBoard
+export default PostG

@@ -11,6 +11,7 @@ import "jquery-ui-bundle";
 import "jquery-ui-bundle/jquery-ui.css";
 import { LeftSideBar } from './dashboard';
 import { animate, stagger } from "animejs";
+import Delete2 from './delete';
 
 const Reception = () => {
     return (
@@ -32,11 +33,6 @@ const ReceRight = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [msg, setMessage] = useState([])
 
-    const [isOpen2, setIsOpen2] = useState(false);
-    const [showDialog2, setShowDialog2] = useState(false);
-    const [msg2, setMessage2] = useState([])
-    const [typa, setTypa] = useState('normal')
-
     const [refresh, setRefresh] = useState(false)
 
     const [autoComplete, setAutocomplete] = useState([])
@@ -47,7 +43,7 @@ const ReceRight = () => {
         const getData = async () => {
             try {
                 const response = await fetch('http://localhost:1000/applicants', {
-                    method: 'Get',
+                    method: 'GET',
                 });
                 if (!response.ok) {
                     throw new Error("Failed to retrive news")
@@ -61,7 +57,7 @@ const ReceRight = () => {
                 });
 
                 setAutocomplete(allComplete)
-
+                getData2();
             } catch (e) {
                 openDialog();
                 setMessage(["Fetching problem", "Can't find applicants, please try again later!"])
@@ -69,6 +65,32 @@ const ReceRight = () => {
         }
         getData();
     }, [refresh])
+
+    const getData2 = async () => {
+        try {
+            const response = await fetch('http://localhost:2000/postgradApplicants', {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error("Failed to retrive news")
+            }
+            const data = await response.json();
+
+            setApplicants2(prev => [...prev, ...data]);
+            setApplicants(prev => [...prev, ...data]);
+
+
+            const i = 0;
+            data.forEach(element => {
+                allComplete.push(element.firstName + " " + element.surname)
+
+            });
+        } catch (e) {
+            openDialog();
+            setMessage(["Fetching problem", "Can't find applicants, please try again later!"])
+        }
+    }
+
 
     const changeCheck = (div, applicant) => {
         if (!selected.includes(applicant)) {
@@ -128,53 +150,10 @@ const ReceRight = () => {
 
     const [loader, setLoader] = useState(false);
 
-    const deleteFirst = async () => {
-        try {
-            setLoader(true)
-            await Promise.all(
-                selected.map(async (applicant) => {
-                    const response = await fetch(`http://localhost:1000/applicants/${applicant._id}`, {
-                        method: "DELETE",
-                    });
-                    if (!response.ok) {
-                        console.error(`Failed to delete files for ${applicant._id}`);
-                    }
-                })
-            );
-            deleteApplicants()
-            // setRefresh(prev => !prev);
-            // setSelected([]);
-        } catch (e) {
-            openDialog();
-            setMessage(["Deleting problem", `Can't be deleted, try again later`]);
-        }
+    const delete1 = (msg1, msg2) => {
+        openDialog();
+        setMessage([msg1, msg2])
     }
-
-    const deleteApplicants = async () => {
-        try {
-            await Promise.all(
-                selected.map(async (applicant) => {
-                    console.log(applicant.uploaderId)
-                    const response = await fetch(`http://localhost:4000/files/${applicant.uploaderId}`, {
-                        method: "DELETE",
-                    });
-                    if (!response.ok) {
-                        console.error(`Failed to delete files for ${applicant.uploaderId}`);
-                    }
-                })
-            );
-            setRefresh(prev => !prev);
-            setSelected([]);
-            openDialog();
-            setMessage(["Deleting", 'Selected applicants are deleted']);
-            setLoader(false)
-        } catch (e) {
-            openDialog();
-            setMessage(["Deleting problem", `Can't be deleted, try again later`]);
-            setLoader(false)
-        }
-    };
-
 
     useEffect(() => {
         setApplicants(applicants || []);
@@ -222,42 +201,22 @@ const ReceRight = () => {
         });
     }
 
+
+    const [isOpen2, setIsOpen2] = useState(false);
+    const [showDialog2, setShowDialog2] = useState(false);
+    const [msg2, setMessage2] = useState([])
+    
     const openDialog2 = () => {
         setShowDialog2(true);
         setTimeout(() => setIsOpen2(true), 10);
     }
 
-    const closeDialog2 = () => {
-        setIsOpen2(false);
-        setTimeout(() => setShowDialog2(false), 300);
-        setTypa('normal')
-    };
 
     return (
         <div id='rightSide'>
             {/* delete dialog */}
             <div style={{ display: isOpen2 ? "block" : "none" }}>
-                {showDialog2 && (
-                    <div className={`dialog-overlay ${isOpen2 ? "open" : ""}`}>
-                        <div className={`dialog-box ${isOpen2 ? "open" : ""}`}>
-                            <h2 id="diaT">{msg2[0]}</h2>
-                            <p id="diaMgs">{msg2[1]}</p>
-                            <div id='buttsdia'>
-                                <button onClick={closeDialog2} id="readMore">
-                                    <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
-                                    <div>Close</div>
-                                </button>
-                                {typa === "delete" ? <button onClick={() => {
-                                    deleteFirst();
-                                    closeDialog2()
-                                }} id="readMore2" style={{backgroundColor:"red"}}>
-                                    <FontAwesomeIcon icon={faTrashCan}></FontAwesomeIcon>
-                                    <div>Yes</div>
-                                </button> : <div></div>}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {showDialog2 && ( <Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
             </div>
 
             <div id='rightDown2'>
@@ -282,7 +241,6 @@ const ReceRight = () => {
                         </button>
 
                         <button id='delete' disabled={selected.length > 0 ? false : true} onClick={() => {
-                            setTypa("delete")
                             setMessage2(["Confirm", `Are your sure, deleting ${selected.length === 1 ? "1 applicant" : selected.length + " applicants"} `]);
                             openDialog2()
                         }}>
