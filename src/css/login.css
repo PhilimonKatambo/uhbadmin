@@ -1,0 +1,150 @@
+#loginPage {
+    background-repeat:repeat;
+    background-size: cover;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+#blur {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 0;
+    background: transparent;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+}
+
+#box {
+    flex: 1;
+    height: 200px;
+    background-color: #fcfbf8;
+    transition: all .5s ease-in-out;
+    border: 0px;
+    background: transparent;
+}
+
+#boxIn {
+    width: 200px;
+}
+
+#form {
+    position: fixed;
+    z-index: 999;
+    margin-top: 100px;
+    width: 33%;
+    background-color: #fcfbf8;
+    border-radius: 5px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-shadow: 0px 0px 10px 0px #004ea1;
+    border: 4px solid #25517e;
+}
+
+#form2 {
+    position: fixed;
+    z-index: 999;
+    margin-top: 10px;
+    width: 33%;
+    background-color: #fcfbf8;
+    border-radius: 5px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-shadow: 0px 0px 10px 0px #004ea1;
+    border: 4px solid #25517e;
+}
+
+#logoFooter {
+    margin: 0 auto;
+    width: 200px;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 500px;
+    background-color: #25517e;
+}
+
+#logoFooter2 {
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 500px;
+    background-color: #25517e;
+}
+
+#formDown {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+#nameTh {
+    border-radius: 10px;
+    box-shadow: 0px 0px 1px 0px #25517e;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    color: grey;
+    font-size: 1rem;
+}
+
+input {
+    outline: none;
+    border: 0px;
+    width: 90%;
+    color: #373737;
+    font-weight: bold;
+    font-size: 1.2rem;
+    background-color: #fcfbf8;
+}
+
+#passInp{
+    width: 100%;
+}
+
+#icon {
+    font-size: 1.5rem;
+}
+
+#loginB {
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    border: 0px;
+    border-radius: 10px;
+    padding: 10px 10px;
+    display: flex;
+    gap: 10px;
+    background: linear-gradient(to right, #0158b5, #004ea1);
+    align-items: center;
+    color: #fcfbf8;
+    font-weight: bold;
+    transition: all 0.5s ease
+}
+
+#loginB:hover {
+    background: linear-gradient(to right, #004ea1, #0158b5);
+    gap: 2px;
+    opacity: 0.9;
+    box-shadow: 0px 0px 3px 0px #004ea1;
+}
+
+#feedB{
+    color: #0dbd2b;
+    font-weight: bold;
+    font-size: 1rem;
+    width: fit-content;
+}

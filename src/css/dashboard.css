@@ -10,10 +10,11 @@ body {
     gap: 30px;
 }
 
-#leftSideT{
+#leftSideT {
     width: 20vw;
     background-color: #1f9cf1;
 }
+
 #leftSide {
     display: flex;
     flex-direction: column;
@@ -22,11 +23,11 @@ body {
     padding: 0px 20px 20px 20px;
     gap: 10px;
     height: 100vh;
-    justify-content:space-between;
+    justify-content: space-between;
     position: fixed;
     overflow-y: scroll;
     scrollbar-width: none;
-    
+
 }
 
 #upSideBar {
@@ -79,11 +80,16 @@ body {
     background-color: #25517e;
 }
 
-#headAcc{
+#headAcc {
     border: 0px;
 }
 
-#headSchools{
+#headAcc:disabled{
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+#headSchools {
     background-color: #25517e;
     border: 0px;
     display: flex;
@@ -110,25 +116,57 @@ body {
     gap: 20px;
 }
 
-#sectionCards{
+#sectionCards {
     display: flex;
     width: 70vw;
-    overflow-x: scroll;
-    scrollbar-width: none;
+    overflow-x: hidden;
     gap: 20px;
     padding: 10px 10px 20px 10px;
     border-radius: 10px;
+    transition: all .5s ease;
 }
 
-#secCard{
+#sectionCards:hover {
+    overflow-x: scroll;
+}
+
+#secCard {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    padding:30px 50px ;
+    padding: 20px 50px;
     align-items: center;
     border-radius: 5px;
     transition: all .5s ease;
+    gap: 10px;
     box-shadow: 0px 5px 50px 1px #25517e;
+    height: fit-content;
+    /* color: #e9254e; */
+}
+
+
+#secCard:hover #schoolName2 {
+    height: 80px;
+}
+
+#schoolName2 {
+    color: #000011;
+    font-weight: 500;
+    height: 70px;
+    width: 150px;
+    line-height: 1em;
+    max-height: 6.5em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    text-overflow: ellipsis;
+    text-align: center;
+    transition: all .5s ease
+}
+
+#secCard:hover #schoolName2 {
+    height: 100px;
 }
 
 /* #sectionCards {
@@ -152,23 +190,87 @@ body {
     gap: 10px;
     transition: all .5s ease;
 } */
-#secCard:hover{
+#secCard:hover {
     box-shadow: 0px 0px 5px 0px #1f9cf1;
+    opacity: 0.8;
 }
 
-#secCard:active{
+#secCard:active {
     opacity: 0.5;
 }
 
-
-#schoolName2 {
-    color: #000011;
-    font-weight: 600;
+#name {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 20%;
 }
+
+#name2 {
+    font-weight: bold;
+    font-size: 1.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+#name3 {
+    font-weight: bold;
+    font-size: 1.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: fit-content;
+}
+
+/* Tooltip text */
+#name::after {
+    content: attr(data-title);
+    /* use custom attribute instead of 'title' */
+    position: absolute;
+    bottom: 125%;
+    /* position above the element */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+/* Tooltip arrow */
+#name::before {
+    content: "";
+    position: absolute;
+    bottom: 115%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+/* Show tooltip on hover */
+#name:hover::after,
+
+#name:hover::before {
+    opacity: 1;
+}
+
 
 #number {
     color: #000011;
-    font-weight: 400;
+    font-weight: 600;
+    font-size: 2em;
+    padding: 0px;
 }
 
 #icon2 {
@@ -202,11 +304,6 @@ body {
 #rightUp {
     display: flex;
     justify-content: space-between;
-}
-
-#name {
-    font-weight: bold;
-    font-size: 1.5rem;
 }
 
 #ops {
@@ -298,10 +395,11 @@ body {
 #disapprove:disabled,
 #recommend:disabled,
 #delete:disabled,
-#deny:disabled{
+#deny:disabled {
     cursor: not-allowed;
     opacity: 0.5;
 }
+
 #table {
     width: 100%;
     max-height: 100vh;
@@ -323,14 +421,15 @@ th {
     white-space: nowrap;
     transition: all 0.5s ease;
 }
-#th{
+
+#th {
     display: flex;
     align-items: center;
     gap: 5px;
     transition: all 0.5s ease;
 }
 
-#icoo{
+#icoo {
     padding: 3px;
     border-radius: 50px;
     font-size: 0.8rem;
@@ -351,14 +450,16 @@ td {
 tr:nth-child(even) {
     background: #f2f2f2;
 }
-#search{
+
+#search {
     display: flex;
-    gap:0px;
+    gap: 0px;
     border-radius: 20px;
     box-shadow: 0px 0px 1px 0px #1f9cf1;
     align-items: center;
 }
-#sarchInput{
+
+#sarchInput {
     border-radius: 20px;
     outline: none;
     border: 0px;
@@ -367,17 +468,18 @@ tr:nth-child(even) {
     font-weight: bold;
     font-size: 0.8rem;
 }
-#searchIcon{
+
+#searchIcon {
     color: grey;
     transition: all 0.5s ease-in;
     padding: 10px;
 }
 
-#searchIcon:hover{
+#searchIcon:hover {
     color: #25517e;
 }
 
-#viewMore{
+#viewMore {
     display: flex;
     width: fit-content;
     padding: 5px;
@@ -391,44 +493,46 @@ tr:nth-child(even) {
     transition: all .5s ease;
 }
 
-#viewMore:hover{
+#viewMore:hover {
     opacity: 0.7;
 }
 
-#otherButtons{
+#otherButtons {
     display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
 }
 
-#otherLeft{
+#otherLeft {
     flex: 1;
     display: flex;
     gap: 10px;
 }
-#butts{
+
+#butts {
     border: 0px;
     color: grey;
     font-size: 1rem;
     font-weight: bold;
-    background-color:#fcfbf8;
+    background-color: #fcfbf8;
     transition: all .5s ease;
 }
 
-#butts:hover{
+#butts:hover {
     color: #25517e;
 }
-#otherRight{
+
+#otherRight {
     border: 0px;
     color: grey;
     font-size: 1rem;
     font-weight: bold;
-    background-color:#fcfbf8;
+    background-color: #fcfbf8;
     transition: all .5s ease;
 }
 
-#checkAll{
+#checkAll {
     display: flex;
     gap: 3px;
     align-items: center;
@@ -436,7 +540,7 @@ tr:nth-child(even) {
     background-color: #fcfbf8;
 }
 
-#buttsdia{
+#buttsdia {
     width: fit-content;
     padding: 5px;
     display: flex;
@@ -458,6 +562,6 @@ tr:nth-child(even) {
     transition: all 0.5s ease;
 }
 
-#newsReadMore:hover{
-    opacity: 0.7 ;
+#newsReadMore:hover {
+    opacity: 0.7;
 }

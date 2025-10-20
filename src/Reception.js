@@ -12,6 +12,8 @@ import "jquery-ui-bundle/jquery-ui.css";
 import { LeftSideBar } from './dashboard';
 import { animate, stagger } from "animejs";
 import Delete2 from './delete';
+import SendDenial from './denial';
+import { useSelector } from 'react-redux';
 
 const Reception = () => {
     return (
@@ -24,7 +26,7 @@ const Reception = () => {
 
 const ReceRight = () => {
 
-    const [status1, setStatus] = useState("All")
+    const [status1, setStatus] = useState("Inactive")
     const [selected, setSelected] = useState([])
     const [applicants, setApplicants] = useState([])
     const [applicants2, setApplicants2] = useState([])
@@ -124,29 +126,75 @@ const ReceRight = () => {
             for (const applicant of selected) {
                 applicant.status = update
 
-                const response = await fetch(`http://localhost:1000/underApply/${applicant._id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ status: update })
-                })
+                if (applicant.form === "undergrad") {
+                    const response = await fetch(`http://localhost:1000/underApply/${applicant._id}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ status: update })
+                    })
 
-                if (!response.ok) {
+                    if (!response.ok) {
 
+                    } else {
+                        const updatedData = await response.json()
+                        setRefresh(!refresh)
+                        setSelected([])
+                        unCheckAll()
+                    }
                 } else {
-                    const updatedData = await response.json()
-                    setRefresh(!refresh)
-                    setSelected([])
+                    const response = await fetch(`http://localhost:2000/postgradApply/${applicant._id}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ status: update })
+                    })
+
+                    if (!response.ok) {
+
+                    } else {
+                        const updatedData = await response.json()
+                        setRefresh(!refresh)
+                        setSelected([])
+                        unCheckAll()
+                        saveHistory(applicant,update)
+                    }
                 }
+
+
             }
 
 
         } catch (e) {
+            console.log("Hello", e)
             openDialog();
             setMessage(["Update problem", `Can't be ${update}, try again letter`])
         }
     }
+
+    const user = useSelector((state) => state.user.user);
+    const saveHistory = async (applicant, update) => {
+        try {
+            const response = await fetch("http://localhost:1200/history", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    operator: user._id,
+                    operatorOn: applicant._id,
+                    operation: update,
+                    reason: "",
+                    additionalText: "",
+                })
+            })
+        } catch (err) {
+            console.log("error", err)
+        }
+    }
+
 
     const [loader, setLoader] = useState(false);
 
@@ -185,6 +233,7 @@ const ReceRight = () => {
 
 
     const [checkOverlay, setOverlay] = useState(false)
+    const [checkOverlay2, setOverlay2] = useState(false)
     const [view, setView] = useState([]);
 
     const reload = useRef(null)
@@ -205,26 +254,47 @@ const ReceRight = () => {
     const [isOpen2, setIsOpen2] = useState(false);
     const [showDialog2, setShowDialog2] = useState(false);
     const [msg2, setMessage2] = useState([])
-    
+
     const openDialog2 = () => {
         setShowDialog2(true);
         setTimeout(() => setIsOpen2(true), 10);
     }
+
+    const [allChecked, setAllChecked] = useState([])
+
+    const checkAll = () => {
+        const check = document.querySelectorAll("#checkB");
+        check.forEach(element => {
+            element.checked = true
+        });
+        setSelected(applicants);
+    }
+
+    const unCheckAll = () => {
+        const check = document.querySelectorAll("#checkB");
+        check.forEach(element => {
+            element.checked = false
+        });
+        setSelected([]);
+    }
+
 
 
     return (
         <div id='rightSide'>
             {/* delete dialog */}
             <div style={{ display: isOpen2 ? "block" : "none" }}>
-                {showDialog2 && ( <Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
+                {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
             </div>
+
+            <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"disapproval"} />
 
             <div id='rightDown2'>
                 <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={refresh} setRefresh={setRefresh} />
                 {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
 
                 <div id='rightUp'>
-                    <div id='name'>{mode}</div>
+                    <div id='name3'>{mode}</div>
                     <div id='search'>
                         <input type='text' id='sarchInput' placeholder='Search' onChange={autoFind}></input>
                         <FontAwesomeIcon icon={faSearch} id='searchIcon'></FontAwesomeIcon>
@@ -235,7 +305,7 @@ const ReceRight = () => {
                             <div id='approve'>Approve</div>
                         </button>
 
-                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Disapproved")}>
+                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay2(true)}>
                             <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
                             <div id='approve'>Disapprove</div>
                         </button>
@@ -267,9 +337,9 @@ const ReceRight = () => {
                     <table>
                         <tr>
                             <th>
-                                <button onClick={(e) => { selectAll(e.target) }} id='checkAll' style={{ border: "0px", color: "rgb(128, 128, 128)", padding: "0px" }}>
+                                <button onClick={(e) => selected.length > 0 ? unCheckAll() : checkAll()} id='checkAll' style={{ border: "0px", color: selected.length > 0 ? "#08bb26" : "rgb(128, 128, 128)", padding: "0px" }}>
                                     <FontAwesomeIcon icon={faSquareCheck} style={{ fontSize: "1.5rem" }} />
-                                    <div>Check all</div>
+                                    <div>{selected.length > 0 ? "Uncheck all" : "Check all"}</div>
                                 </button>
                             </th>
                             <td></td>
@@ -293,9 +363,16 @@ const ReceRight = () => {
                                     (status1 === "All" || applicant.status === status1) ?
                                         <tr key={applicant._id}>
                                             <td>
-                                                <button onClick={(e) => { changeCheck(e.target, applicant) }} style={{ border: "0px", color: "rgb(128, 128, 128)", padding: "0px" }}>
-                                                    <FontAwesomeIcon icon={faSquareCheck} style={{ fontSize: "1.5rem" }} />
-                                                </button>
+
+                                                <input type='checkbox' onClick={(e) => {
+                                                    if (e.target.checked === true) {
+                                                        setSelected(prev => [...prev, applicant]);
+                                                        //setAllChecked(prev => [...prev, e.target]);
+                                                    } else {
+                                                        setSelected(prev => prev.filter(a => a !== applicant));
+                                                        //setAllChecked(prev => prev.filter(a => a !== e.target));
+                                                    }
+                                                }} id='checkB' ></input>
                                             </td>
                                             <td>
                                                 <div id='th'>

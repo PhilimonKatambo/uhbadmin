@@ -1,0 +1,90 @@
+.offer-letter {
+  width: 80%;
+  margin: 2rem auto;
+  padding: 2rem;
+  color: #000000;
+  font-family: "Times New Roman", serif;
+  line-height: 1.6;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  align-items: center;
+  justify-content: center;
+  background-color: #fffefa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+#logoBack {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  position: absolute;
+  top: 90%;
+  left: 25%;
+  z-index: 1px;
+  opacity: .3;
+}
+
+#formStafff {
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.date {
+  text-align: right;
+}
+
+h3,
+h4 {
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+}
+
+#tb {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+#tb,
+#th1,
+#td1 {
+  border: 1px solid #555;
+  color: #000000;
+}
+
+#th1,
+#td1 {
+  padding: 8px;
+  text-align: center;
+  color: #000000;
+}
+
+.editable {
+  border: none;
+  border-bottom: 1px solid #444;
+  background: transparent;
+  font-size: inherit;
+  font-family: inherit;
+  width: auto;
+  outline: none;
+}
+
+.long {
+  width: 100%;
+}
+
+.short {
+  width: 150px;
+}
+
+#coverPage {
+  object-fit: contain;
+  width: 100%;
+}

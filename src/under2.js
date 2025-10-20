@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './css/dashboard.css';
-import { fa1, faAddressCard, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faGraduationCap, faHeading, faHeadSideCough, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
+import { fa1, faAddressCard, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faGraduationCap, faHeading, faHeadSideCough, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { faFirstOrderAlt } from '@fortawesome/free-brands-svg-icons';
-import { useEffect, useState } from 'react';
-import Dialog from './dialog';
+import { useEffect, useRef, useState } from 'react';
+import Dialog, { RecoDialog } from './dialog';
 import ViewApplicant from './viewApplicant';
 import $ from "jquery"
 import "jquery-ui-bundle";
@@ -12,8 +12,11 @@ import "jquery-ui-bundle/jquery-ui.css";
 import Reception from './Reception';
 import { useNavigate } from 'react-router-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core';
-import { LeftSideBar } from './dashboard';
 import Delete2 from './delete';
+import SendEmail from './sendEmail';
+import { animate, stagger } from "animejs";
+import SendDenial from './denial';
+import { LeftSideBar } from './dashboard';
 
 
 const DashBoard2 = () => {
@@ -21,6 +24,7 @@ const DashBoard2 = () => {
         <div id='body'>
             <LeftSideBar />
             <RightSide />
+            {/* <SendEmail /> */}
         </div>
     )
 }
@@ -33,7 +37,7 @@ const RightSide = () => {
     const [msg, setMessage] = useState([])
     const [refresh, setRefresh] = useState(false)
 
-    const [rightMode, setRightMode] = useState("BBA");
+    const [rightMode, setRightMode] = useState("");
 
     const openDialog = () => {
         setShowDialog(true);
@@ -42,6 +46,7 @@ const RightSide = () => {
 
     const [autoComplete, setAutocomplete] = useState([])
     let allComplete = []
+    const [xools, setXools] = useState([])
     useEffect(() => {
         const getData = async () => {
             try {
@@ -54,11 +59,13 @@ const RightSide = () => {
                 const data = await response.json();
                 setApplicants(data);
                 const i = 0;
+                let xool = []
                 data.forEach(element => {
                     allComplete.push(element.firstName + " " + element.surname)
-
+                    xool.push(element.academicDetails[0].programme)
                 });
-
+                setXools(Array.from(new Set(xool)))
+                setRightMode(Array.from(new Set(xool))[0])
             } catch (e) {
                 openDialog();
                 setMessage(["Fetching problem", "Can't find applicants, please try again later!"])
@@ -68,7 +75,6 @@ const RightSide = () => {
     }, [refresh])
 
 
-    const xools = ["BBA", "ADD", "BPHA", "IT", "hs", "kkd", "slsd"]
     return (
         <div id='rightSide'>
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
@@ -100,7 +106,7 @@ const XoolCard = (props) => {
     const colors = ["#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7"];
     const colors2 = ["#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d"];
     return (
-        <div id='secCard' style={{ backgroundColor: `${colors[index]}` }} onClick={() => { props.setMode(props.xool) }}>
+        <div id='secCard' style={{ backgroundColor: `${colors[index]}`, boxShadow: props.mode===props.xool?"0px 10px 5px 1px #022a5d": "0px 5px 50px 1px #25517e"}} onClick={() => { props.setMode(props.xool) }}>
             <FontAwesomeIcon icon={faGraduationCap} id='icon2' style={{ backgroundColor: `${colors2[index]}` }}></FontAwesomeIcon>
             <div id='schoolName2'>{props.xool}</div>
             <div id='number'>{num}</div>
@@ -111,7 +117,7 @@ const XoolCard = (props) => {
 
 const RightSideDown = (props) => {
 
-    const [status1, setStatus] = useState("All")
+    const [status1, setStatus] = useState("Accepted")
     const [selected, setSelected] = useState([])
     const [applicants, setApplicants] = useState([])
 
@@ -135,16 +141,6 @@ const RightSideDown = (props) => {
         setTimeout(() => setIsOpen(true), 10);
     };
 
-    const selectAll = (div) => {
-        const color = window.getComputedStyle(div).color
-        if (color === "rgb(128, 128, 128)") {
-            div.style.color = "#08bb26";
-            //setSelected([...selected, applicants])
-        } else {
-            div.style.color = "grey";
-            // setSelected([])
-        }
-    }
 
     const updateApplicants = async (update) => {
         try {
@@ -160,11 +156,41 @@ const RightSideDown = (props) => {
                 })
 
                 if (!response.ok) {
-
                 } else {
                     const updatedData = await response.json()
-                    props.setRefresh(!props.refresh)
+                    refreshed()
                     setSelected([])
+                    unCheckAll()
+                }
+            }
+
+
+        } catch (e) {
+            openDialog();
+            setMessage(["Update problem", `Can't be ${update}, try again letter`])
+        }
+    }
+
+
+    const updateApplicantsReco = async (update) => {
+        try {
+            for (const applicant of selected) {
+                applicant.programme = update
+                console.log(update)
+                const response = await fetch(`http://localhost:1000/underApplyReco/${applicant._id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ "academicDetails.0.programme": update })
+                })
+
+                if (!response.ok) {
+                } else {
+                    const updatedData = await response.json()
+                    refreshed()
+                    setSelected([])
+                    unCheckAll()
                 }
             }
 
@@ -202,6 +228,7 @@ const RightSideDown = (props) => {
     }
 
 
+
     const setRefresh = props.setRefresh;
     const [loader, setLoader] = useState()
     const [checkOverlay, setOverlay] = useState(false)
@@ -211,28 +238,78 @@ const RightSideDown = (props) => {
     const [showDialog2, setShowDialog2] = useState(false);
     const [msg2, setMessage2] = useState([])
 
+    const [isOpen3, setIsOpen3] = useState(false);
+    const [showDialog3, setShowDialog3] = useState(false);
+    const [msg3, setMessage3] = useState([])
+
     const openDialog2 = () => {
         setShowDialog2(true);
         setTimeout(() => setIsOpen2(true), 10);
     }
+
+    const openDialog3 = () => {
+        setShowDialog3(true);
+        setTimeout(() => setIsOpen3(true), 10);
+    }
+
+    const checkAll = () => {
+        const check = document.querySelectorAll("#checkB");
+        check.forEach(element => {
+            element.checked = true
+        });
+        setSelected(applicants);
+    }
+
+    const unCheckAll = () => {
+        const check = document.querySelectorAll("#checkB");
+        check.forEach(element => {
+            element.checked = false
+        });
+        setSelected([]);
+    }
+
+    const [checkOverlay2, setOverlay2] = useState(false)
+    const reload = useRef(null)
+    const refreshed = () => {
+        props.setRefresh(!props.refresh);
+        animate(reload.current, {
+            duration: 1200,
+            easing: "easeOutExpo",
+            keyframes: [
+                { opacity: 0, rotate: 360 },
+                { opacity: 1, rotate: 0 }
+            ],
+        }
+        )
+    }
+
     return (
         <div id='rightDown'>
-
+            <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"denial"} />
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
             {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
+            {showDialog3 ? <RecoDialog msg={msg} isOpen={isOpen3} showDialog={showDialog3} setIsOpen={setIsOpen3} setShowDialog={setShowDialog3} refresh={props.refresh} setRefresh={props.setRefresh} updateApplicants={updateApplicants} updateApplicantsReco={updateApplicantsReco} /> : <div style={{ display: "none" }}></div>}
+
             <div id='rightUp'>
-                <div id='name'>{props.mode}</div>
+                <div id='name'  data-title={props.mode}>
+                    <div id='name2'>{props.mode}</div>    
+                </div>
                 <div id='search'>
                     <input type='text' id='sarchInput' placeholder='Search' onChange={autoFind}></input>
                     <FontAwesomeIcon icon={faSearch} id='searchIcon'></FontAwesomeIcon>
                 </div>
                 <div id='ops'>
-                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Offered")}>
+                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Accepted")}>
                         <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
-                        <div id='approve'>Send offer letter</div>
+                        <div id='approve'>accept</div>
                     </button>
-                    <button id='deny' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Denied")}>
+
+                    <button id='recommend' disabled={selected.length > 0 ? false : true} onClick={() => openDialog3()}>
+                        <FontAwesomeIcon icon={faCheckDouble}></FontAwesomeIcon>
+                        <div id='approve'>Recommend</div>
+                    </button>
+                    <button id='deny' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay2(true)}>
                         <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>
                         <div id='approve'>Deny</div>
                     </button>
@@ -250,9 +327,10 @@ const RightSideDown = (props) => {
                 <div id='otherLeft'>
                     <button id='butts' onClick={() => setStatus("All")} style={{ color: status1 === "All" ? "#25517e" : "grey" }}>All</button>
                     <button id='butts' onClick={() => setStatus("Accepted")} style={{ color: status1 === "Accepted" ? "#25517e" : "grey" }}>Accepted</button>
+                    <button id='butts' onClick={() => setStatus("Approved")} style={{ color: status1 === "Approved" ? "#25517e" : "grey" }}>Approved</button>
                     <button id='butts' onClick={() => setStatus("Recommended")} style={{ color: status1 === "Recommended" ? "#25517e" : "grey" }}>Recommended</button>
-                    <button id='butts' onClick={() => setStatus("Offered")} style={{ color: status1 === "Offered" ? "#25517e" : "grey" }}>Offered</button>
                     <button id='butts' onClick={() => setStatus("Denied")} style={{ color: status1 === "Denied" ? "#25517e" : "grey" }}>Denied</button>
+                    <FontAwesomeIcon icon={faRefresh} ref={reload} onClick={refreshed} id='refresh'></FontAwesomeIcon>
                 </div>
                 <div id='otherRight'>
                     {selected.length} Selected
@@ -263,9 +341,9 @@ const RightSideDown = (props) => {
                 <table>
                     <tr>
                         <th>
-                            <button onClick={(e) => { selectAll(e.target) }} id='checkAll' style={{ border: "0px", color: "rgb(128, 128, 128)", padding: "0px" }}>
+                            <button onClick={(e) => selected.length > 0 ? unCheckAll() : checkAll()} id='checkAll' style={{ border: "0px", color: selected.length > 0 ? "#08bb26" : "rgb(128, 128, 128)", padding: "0px" }}>
                                 <FontAwesomeIcon icon={faSquareCheck} style={{ fontSize: "1.5rem" }} />
-                                <div>Check all</div>
+                                <div>{selected.length > 0 ? "Uncheck all" : "Check all"}</div>
                             </button>
                         </th>
                         <td></td>
@@ -290,9 +368,15 @@ const RightSideDown = (props) => {
                                     applicant.academicDetails[0].programme === props.mode ? (
                                     <tr key={applicant._id}>
                                         <td>
-                                            <button onClick={(e) => { changeCheck(e.target, applicant) }} style={{ border: "0px", color: "rgb(128, 128, 128)", padding: "0px" }}>
-                                                <FontAwesomeIcon icon={faSquareCheck} style={{ fontSize: "1.5rem" }} />
-                                            </button>
+                                            <input type='checkbox' onClick={(e) => {
+                                                if (e.target.checked === true) {
+                                                    setSelected(prev => [...prev, applicant]);
+                                                    //setAllChecked(prev => [...prev, e.target]);
+                                                } else {
+                                                    setSelected(prev => prev.filter(a => a !== applicant));
+                                                    //setAllChecked(prev => prev.filter(a => a !== e.target));
+                                                }
+                                            }} id='checkB' ></input>
                                         </td>
                                         <td>
                                             <div id='th'>
@@ -323,5 +407,6 @@ const RightSideDown = (props) => {
         </div>
     )
 }
+
 
 export default DashBoard2
