@@ -75,7 +75,7 @@ const NewsPage = () => {
     return (
         <div id='newsPage'>
             <LeftSideBar />
-            <ShareButtons />
+            {/* <ShareButtons /> */}
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
             <PostNews checkOverlay={checkOverlay} setOverlay={setOverlay} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} refresh={refresh} />
             <div id='bigNewCard'>
@@ -155,14 +155,11 @@ const NewsCards = (props) => {
     }, [props.news.filename]);
 
     const news = props.news;
-
-    const [likesCount, setLikesCount] = useState(news.metadata.reactions.likes)
-    const [disLikesCount, setDisLikesCount] = useState(news.metadata.reactions.dislikes)
     const [like, setLike] = useState(false)
     const [dislike, setDislike] = useState(false)
 
     const updateReaction = async (reaction) => {
-        const id=props.news._id
+        const id = props.news._id
         try {
             const response = await fetch(`http://localhost:8000/files/${id}/react`, {
                 method: "PUT",
@@ -170,7 +167,9 @@ const NewsCards = (props) => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    type: reaction
+                    type: reaction,
+                    like: like,
+                    dislike: dislike
                 })
             })
 
@@ -254,7 +253,7 @@ const NewsCards = (props) => {
                             <FontAwesomeIcon icon={faTrashCan} id='deleteNews'></FontAwesomeIcon>
                         </div>
                     </div>
-                    <ReadNews checkOverlay={checkOverlay} setOverlay={setOverlay} news={props.news} file={file} fileType={fileType} updateReaction={updateReaction} deleteNews={deleteNews} reactions={reactions} />
+                    <ReadNews checkOverlay={checkOverlay} setOverlay={setOverlay} news={props.news} file={file} fileType={fileType} updateReaction={updateReaction} deleteNews={deleteNews} reactions={reactions} like={like} dislike={dislike} setLike={setLike} setDislike={setDislike}/>
                     <div id="newsMore2">
                         <div id="newsTitle2">
                             <div>{news.metadata.title}</div>
@@ -295,21 +294,21 @@ const NewsCards = (props) => {
                     ) : (
                         <div className="loader"></div>
                     )}
-                    <ReadNews checkOverlay={checkOverlay} setOverlay={setOverlay} news={props.news} file={vidsUrl} fileType={fileType} updateReaction={updateReaction} deleteNews={deleteNews} reactions={reactions}/>
+                    <ReadNews checkOverlay={checkOverlay} setOverlay={setOverlay} news={props.news} file={vidsUrl} fileType={fileType} updateReaction={updateReaction} deleteNews={deleteNews} reactions={reactions} like={like} dislike={dislike} setLike={setLike} setDislike={setDislike} />
                     <div id="newsMore3">
                         <div id="newsTitle3">{news.metadata.title}</div>
                         <div id="newsContent">
                             <div id="shortN">{news.metadata.description}</div>
                             <div id="reacts">
                                 <div id="reactions">
-                                    <div id="like2" onClick={() => updateReaction("like")}>
+                                    <button id="like2" onClick={() => updateReaction("like")} disabled={like}>
                                         <div>{reactions.likes}</div>
                                         <FontAwesomeIcon icon={faThumbsUp} />
-                                    </div>
-                                    <div id="like2" onClick={() => updateReaction("dislike")}>
+                                    </button>
+                                    <button id="like2" onClick={() => updateReaction("dislike")} disabled={dislike}>
                                         <div>{reactions.likes.dislikes}</div>
                                         <FontAwesomeIcon icon={faThumbsDown} />
-                                    </div>
+                                    </button>
 
                                     <div id='upIn' onClick={() => deleteNews(news._id)}>
                                         <FontAwesomeIcon icon={faTrashCan} id='deleteNews'></FontAwesomeIcon>
@@ -354,14 +353,20 @@ const ReadNews = (props) => {
 
                 <div id='reacts2'>
                     <div id='reactions2'>
-                        <div id='like2' onClick={() => props.updateReaction("like")}>
+                        <button id='like2' onClick={() => {
+                            props.updateReaction("like")
+                            props.setLike(true)
+                        }} disabled={props.like}>
                             <div>{props.reactions.likes}</div>
                             <FontAwesomeIcon icon={faThumbsUp}></FontAwesomeIcon>
-                        </div>
-                        <div id='like2' onClick={() => props.updateReaction("dislike")}>
+                        </button>
+                        <button id='like2' onClick={() => {
+                            props.updateReaction("dislike")
+                            props.setDislike(true)
+                        }} disabled={props.dislike}>
                             <div>{props.reactions.dislikes}</div>
                             <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
-                        </div>
+                        </button>
                         <div id='upIn' onClick={() => props.deleteNews(news._id)}>
                             <FontAwesomeIcon icon={faTrashCan} id='deleteNews'></FontAwesomeIcon>
                         </div>

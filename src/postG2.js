@@ -147,7 +147,7 @@ const RightSideDown = (props) => {
 
 
     const user = useSelector((state) => state.user.user);
-    const updateApplicants = async (update) => {
+    const updateApplicants = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.status = update
@@ -166,7 +166,7 @@ const RightSideDown = (props) => {
                     refreshed()
                     setSelected([])
                     unCheckAll()
-                    saveHistory(applicant, update)
+                    saveHistory(applicant, update, reason, additionalText)
                 }
             }
 
@@ -177,19 +177,22 @@ const RightSideDown = (props) => {
         }
     }
 
-    const saveHistory = async (selected,update) => {
+    //   const user = useSelector((state) => state.user.user);
+    const saveHistory = async (selected, update, reason, additionalText) => {
+
         try {
-            const response = await fetch("http://localhost:1200", {
-                method: 'GET',
-                headers:{
-                    "Content-Type":"application/json"
+            const response = await fetch("http://localhost:1200/history", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     operator: user._id,
                     operatorOn: selected._id,
                     operation: update,
-                    reason: "",
-                    additionalText: "",
+                    operatedType: user.form,
+                    reason: reason || "Common reason",
+                    additionalText: additionalText || "We inform for this user activity",
                 })
             })
         } catch (err) {
@@ -198,7 +201,7 @@ const RightSideDown = (props) => {
     }
 
 
-    const updateApplicantsReco = async (update) => {
+    const updateApplicantsReco = async (update,reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.programme = update
@@ -217,6 +220,8 @@ const RightSideDown = (props) => {
                     refreshed()
                     setSelected([])
                     unCheckAll()
+                    saveHistory(applicant, update, reason, additionalText)
+
                 }
             }
 
@@ -226,6 +231,8 @@ const RightSideDown = (props) => {
             setMessage(["Update problem", `Can't be ${update}, try again letter`])
         }
     }
+
+
 
     useEffect(() => {
         setApplicants(props.applicants || []);
@@ -371,7 +378,7 @@ const RightSideDown = (props) => {
                                 <div>{selected.length > 0 ? "Uncheck all" : "Check all"}</div>
                             </button>
                         </th>
-                        <td></td>
+                        <th></th>
                         <th>
                             <div id='th'>
                                 <FontAwesomeIcon icon={fa1} id='icoo'></FontAwesomeIcon>

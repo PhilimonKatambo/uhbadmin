@@ -256,7 +256,7 @@ const ViewApplicant = (props) => {
                         <div id="inps"><div id='label'>Admin Signature:</div><div>{applicant.officeUse?.signature}</div></div>
                     </div>
 
-                    <div id="downButt">
+                    {/* <div id="downButt">
                         <button type="submit" id='submit1' className="submit-btn" onClick={() => { updateApplicants("Approved") }} disabled={applicant.status === "Approved" ? true : false}>
                             {checkSubmit ? "Approving..." : "Approve"}
                             {checkSubmit ? <div className="loader"></div> : <FontAwesomeIcon icon={faRightToBracket} />}
@@ -271,7 +271,7 @@ const ViewApplicant = (props) => {
                             <div>Print</div>
                             <FontAwesomeIcon icon={faPrint} />
                         </button>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>

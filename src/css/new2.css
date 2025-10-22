@@ -228,6 +228,7 @@
 #like:disabled {
     background-color: #004ea1;
     color: #fcfbf8;
+    cursor: not-allowed;
 }
 
 #checkB[type="checkbox"] {
@@ -608,6 +609,12 @@
 #like2:hover {
     background-color: #4c6179;
     color: #dfe4ea;
+}
+
+#like2:disabled{
+    background-color: #4c6179;
+    color: #dfe4ea;
+    cursor: not-allowed;
 }
 
 #shortNews3 {

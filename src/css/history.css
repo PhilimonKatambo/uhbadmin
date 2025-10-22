@@ -9,10 +9,131 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     margin-top: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 1px 0px grey;
     height: 100vh;
-    overflow-y: scroll;
+}
+
+#historyCard {
+    color: grey;
+    width: 70vw;
+    height: fit-content;
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 0px grey;
+    transition: all .5s ease;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+#historyCard:hover {
+    background-color: #d5d5d5;
+    color: #212121;
+}
+
+#hisFeed {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 10px;
+    width: 98%;
+    height: 100vh;
+    overflow-x: scroll;
+}
+
+#accordion {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background-color: #25517e;
+    color: #fcfbf8;
+    font-size: 1.5rem;
+}
+
+#filterC {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#tbb {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+tr:nth-child(even) {
+    background: #ffffff;
+}
+
+td {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#tdd {
+    padding: 20px 5px;
+}
+
+#delete2 {
+    background-color: red;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 0px;
+    width: fit-content;
+    color: #fcfbf8;
+    font-weight: 600;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    transition: all .5s ease;
+    margin-left: 20px;
+}
+
+#delete2:hover {
+    opacity: .7;
+}
+
+#inps1 {
+    display: flex;
+    align-items: center;
+}
+
+#downFilter {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#loader9 {
+    --d: 22px;
+    width: 4px;
+    height: 4px;
+    margin: 0 auto;
+    margin-top: 30%;
+    border-radius: 50%;
+    color: #004ea1;
+    box-shadow:
+        calc(1*var(--d)) calc(0*var(--d)) 0 0,
+        calc(0.707*var(--d)) calc(0.707*var(--d)) 0 1px,
+        calc(0*var(--d)) calc(1*var(--d)) 0 2px,
+        calc(-0.707*var(--d)) calc(0.707*var(--d)) 0 3px,
+        calc(-1*var(--d)) calc(0*var(--d)) 0 4px,
+        calc(-0.707*var(--d)) calc(-0.707*var(--d))0 5px,
+        calc(0*var(--d)) calc(-1*var(--d)) 0 6px;
+    animation: l27 1s infinite steps(8);
+}
+
+@keyframes l27 {
+    100% {
+        transform: rotate(1turn)
+    }
 }

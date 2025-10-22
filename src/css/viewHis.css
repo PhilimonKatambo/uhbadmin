@@ -1,0 +1,67 @@
+#hisBody{
+    width: 50%;
+    height: 100vh;
+    background-color: #fcfbf8;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0px 20px;
+    overflow-y: scroll;
+}
+
+#data90{
+    display: flex;
+    font-size: 1.1rem;
+    font-weight: 500;
+    gap: 20px;
+    align-items: center;
+}
+
+#actual{
+    font-size: 1rem;
+    color: #007bff;
+}
+
+#actual2{
+    font-size: 1rem;
+    color: #007bff;
+    max-height: 100px;
+    transition: all .5s ease;
+    overflow-y: scroll;
+}
+
+#icon1{
+    font-size: 1.5rem;
+    color: #004ea1;
+}
+
+#logoBack2 {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  z-index: 1px;
+  opacity: .1;
+}
+
+#submit1{
+    display: flex;
+    width: fit-content;
+    border-radius: 5px;
+    border: 0px;
+    background: linear-gradient(to right, #007bff,#004ea1);
+    color: #fcfbf8;
+    font-weight: 600;
+    padding: 10px 10px;
+    gap: 10px;
+    transition: all .5s ease;
+}
+
+#submit1:hover{
+    opacity: .9;
+    gap: 5px;
+}

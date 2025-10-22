@@ -142,6 +142,7 @@ const ReceRight = () => {
                         setRefresh(!refresh)
                         setSelected([])
                         unCheckAll()
+                        saveHistory(applicant, update)
                     }
                 } else {
                     const response = await fetch(`http://localhost:2000/postgradApply/${applicant._id}`, {
@@ -159,7 +160,7 @@ const ReceRight = () => {
                         setRefresh(!refresh)
                         setSelected([])
                         unCheckAll()
-                        saveHistory(applicant,update)
+                        saveHistory(applicant, update)
                     }
                 }
 
@@ -175,7 +176,8 @@ const ReceRight = () => {
     }
 
     const user = useSelector((state) => state.user.user);
-    const saveHistory = async (applicant, update) => {
+    const saveHistory = async (selected, update, reason, additionalText) => {
+
         try {
             const response = await fetch("http://localhost:1200/history", {
                 method: 'POST',
@@ -184,10 +186,11 @@ const ReceRight = () => {
                 },
                 body: JSON.stringify({
                     operator: user._id,
-                    operatorOn: applicant._id,
+                    operatorOn: selected._id,
                     operation: update,
-                    reason: "",
-                    additionalText: "",
+                    operatedType: user.form,
+                    reason: reason || "Common reason",
+                    additionalText: additionalText || "We inform for this user activity",
                 })
             })
         } catch (err) {
@@ -308,6 +311,11 @@ const ReceRight = () => {
                         <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay2(true)}>
                             <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
                             <div id='approve'>Disapprove</div>
+                        </button>
+
+                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive")}>
+                            <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
+                            <div id='approve'>Inactivate</div>
                         </button>
 
                         <button id='delete' disabled={selected.length > 0 ? false : true} onClick={() => {

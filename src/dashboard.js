@@ -56,8 +56,6 @@ const LeftSideBar = () => {
         if (user.firstName === "") {
             navigate("/")
         }
-
-        console.log(user.userRole)
     })
 
     const dispatch = useDispatch()
@@ -239,7 +237,7 @@ const RightSideDown = (props) => {
     };
 
 
-    const updateApplicants = async (update) => {
+    const updateApplicants = async (update,reason,additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.status = update
@@ -259,7 +257,7 @@ const RightSideDown = (props) => {
                     setSelected([])
                     unCheckAll()
                     console.log("Hello")
-                    saveHistory(applicant, update)
+                    saveHistory(applicant, update,reason,additionalText)
                 }
             }
 
@@ -271,7 +269,7 @@ const RightSideDown = (props) => {
     }
 
     const user = useSelector((state) => state.user.user);
-    const saveHistory = async (selected, update) => {
+    const saveHistory = async (selected, update,reason,additionalText) => {
 
         try {
             const response = await fetch("http://localhost:1200/history", {
@@ -283,8 +281,9 @@ const RightSideDown = (props) => {
                     operator: user._id,
                     operatorOn: selected._id,
                     operation: update,
-                    reason: "",
-                    additionalText: "",
+                    operatedType: user.form,
+                    reason: reason || "Common reason",
+                    additionalText: additionalText || "We inform for this user activity",
                 })
             })
         } catch (err) {
