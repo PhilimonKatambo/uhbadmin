@@ -17,6 +17,7 @@ import SendEmail from './sendEmail';
 import { animate, stagger } from "animejs";
 import SendDenial from './denial';
 import { LeftSideBar } from './dashboard';
+import { useSelector } from 'react-redux';
 
 
 const DashBoard = () => {
@@ -57,7 +58,11 @@ const RightSide = () => {
                     throw new Error("Failed to retrive news")
                 }
                 const data = await response.json();
-                setApplicants(data);
+                const sortedData = [...data].sort((a, b) =>
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setApplicants(sortedData);
+
                 const i = 0;
                 let xool = []
                 data.forEach(element => {
@@ -104,10 +109,10 @@ const XoolCard = (props) => {
         });
         setNum(number)
     })
-    const colors = ["#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7","#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7","#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7","#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7"];
-    const colors2 = ["#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d","#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d","#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d","#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d"];
+    const colors = ["#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7", "#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7", "#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7", "#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7"];
+    const colors2 = ["#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d", "#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d", "#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d", "#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d"];
     return (
-        <div id='secCard' style={{ backgroundColor: `${colors[index]}`, boxShadow: props.mode===props.xool?"0px 10px 5px 1px #022a5d": "0px 5px 50px 1px #25517e"}} onClick={() => { props.setMode(props.xool) }}>
+        <div id='secCard' style={{ backgroundColor: `${colors[index]}`, boxShadow: props.mode === props.xool ? "0px 10px 5px 1px #022a5d" : "0px 5px 50px 1px #25517e" }} onClick={() => { props.setMode(props.xool) }}>
             <FontAwesomeIcon icon={faGraduationCap} id='icon2' style={{ backgroundColor: `${colors2[index]}` }}></FontAwesomeIcon>
             <div id='schoolName2'>{props.xool}</div>
             <div id='number'>{num}</div>
@@ -143,7 +148,7 @@ const RightSideDown = (props) => {
     };
 
 
-    const updateApplicants = async (update) => {
+    const updateApplicants = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.status = update
@@ -162,6 +167,7 @@ const RightSideDown = (props) => {
                     refreshed()
                     setSelected([])
                     unCheckAll()
+                    saveHistory(applicant, update, reason, additionalText)
                 }
             }
 
@@ -173,7 +179,7 @@ const RightSideDown = (props) => {
     }
 
 
-    const updateApplicantsReco = async (update) => {
+    const updateApplicantsReco = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.programme = update
@@ -201,6 +207,30 @@ const RightSideDown = (props) => {
             setMessage(["Update problem", `Can't be ${update}, try again letter`])
         }
     }
+
+    const user = useSelector((state) => state.user.user);
+    const saveHistory = async (applicant, update, reason1, additionalText1) => {
+        try {
+            const response = await fetch("http://localhost:1200/history", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    operator: user._id,
+                    operatorOn: applicant._id,
+                    operatorOnName: applicant.firstName + " " + applicant.surname,
+                    operation: update,
+                    operatedType: applicant.form,
+                    reason: reason1 ? reason1 : "Common reason",
+                    additionalText: additionalText1 ? additionalText1 : "We would like to inform any information!",
+                })
+            })
+        } catch (err) {
+            console.log("error", err)
+        }
+    }
+
 
     useEffect(() => {
         setApplicants(props.applicants || []);
@@ -289,12 +319,12 @@ const RightSideDown = (props) => {
             <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"denial"} />
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
-            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
+            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory}/>)}
             {showDialog3 ? <RecoDialog msg={msg} isOpen={isOpen3} showDialog={showDialog3} setIsOpen={setIsOpen3} setShowDialog={setShowDialog3} refresh={props.refresh} setRefresh={props.setRefresh} updateApplicants={updateApplicants} updateApplicantsReco={updateApplicantsReco} /> : <div style={{ display: "none" }}></div>}
 
             <div id='rightUp'>
-                <div id='name'  data-title={props.mode}>
-                    <div id='name2'>{props.mode}</div>    
+                <div id='name' data-title={props.mode}>
+                    <div id='name2'>{props.mode}</div>
                 </div>
                 <div id='search'>
                     <input type='text' id='sarchInput' placeholder='Search' onChange={autoFind}></input>

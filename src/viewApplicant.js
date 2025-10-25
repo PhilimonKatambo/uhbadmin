@@ -73,7 +73,7 @@ const ViewApplicant = (props) => {
         else if (update === "Disapproved") setCheckSubmit2(true);
 
         try {
-            const response = await fetch(`http://localhost:1000/underApply/${applicant._id}`, {
+            const response = await fetch(`http://localhost:1000/underApply/${applicant?._id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: update })
@@ -85,7 +85,7 @@ const ViewApplicant = (props) => {
 
             setMsg([
                 "Update success",
-                `${applicant.firstName} ${applicant.surname} has been ${update}.`
+                `${applicant?.firstName} ${applicant?.surname} has been ${update}.`
             ]);
             setShowDialog(true);
             setIsOpen(true);
@@ -94,7 +94,7 @@ const ViewApplicant = (props) => {
             console.error(e); 
             setMsg([
                 "Update problem",
-                `Can't update ${applicant.firstName} ${applicant.surname}. Try again later.`
+                `Can't update ${applicant?.firstName} ${applicant?.surname}. Try again later.`
             ]);
             setShowDialog(true);
             setIsOpen(true);
@@ -117,7 +117,7 @@ const ViewApplicant = (props) => {
 
                     <div id="fileNames">
                         <div id="fLeft">
-                            <div id='fileMore' onClick={() => { downLoadFiles(applicant.firstName + "-" + applicant.surname, applicant.uploaderId, "file1") }}>
+                            <div id='fileMore' onClick={() => { downLoadFiles(applicant?.firstName + "-" + applicant?.surname, applicant?.uploaderId, "file1") }}>
                                 View Fee Payment Receipt
                                 <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
                             </div>
@@ -136,25 +136,25 @@ const ViewApplicant = (props) => {
                     <div id="studentDetails">
                         <div id="inps">
                             <div id='label'>Surname:</div>
-                            <div>{applicant.surname}</div>
+                            <div>{applicant?.surname}</div>
                         </div>
-                        <div id="inps"><div id='label'>First Name:</div><div>{applicant.firstName}</div></div>
-                        <div id="inps"><div id='label'>Middle Name:</div><div>{applicant.middleName}</div></div>
-                        <div id="inps"><div id='label'>Marital Status:</div><div>{applicant.maritalStatus}</div></div>
-                        <div id="inps"><div id='label'>Gender:</div><div>{applicant.gender}</div></div>
-                        <div id="inps"><div id='label'>Nationality:</div><div>{applicant.nationality}</div></div>
-                        <div id="inps"><div id='label'>Country:</div><div>{applicant.country}</div></div>
-                        <div id="inps"><div id='label'>NRC / Passport No.:</div><div>{applicant.idNumber}</div></div>
-                        <div id="inps"><div id='label'>District:</div><div>{applicant.district}</div></div>
-                        <div id="inps"><div id='label'>T/A:</div><div>{applicant.ta}</div></div>
-                        <div id="inps"><div id='label'>Village:</div><div>{applicant.village}</div></div>
-                        <div id="inps"><div id='label'>Date of Birth:</div><div>{new Date(applicant.dateOfBirth).toLocaleString("en-GB")}</div></div>
-                        <div id="inps"><div id='label'>Place of Birth:</div><div>{applicant.placeOfBirth}</div></div>
-                        <div id="inps"><div id='label'>Contact Address:</div><div>{applicant.address}</div></div>
-                        <div id="inps"><div id='label'>Cell:</div><div>{applicant.phoneCell}</div></div>
-                        <div id="inps"><div id='label'>Home Phone:</div><div>{applicant.phoneHome}</div></div>
-                        <div id="inps"><div id='label'>Office Phone:</div><div>{applicant.phoneOffice}</div></div>
-                        <div id="inps"><div id='label'>Email:</div><div>{applicant.email}</div></div>
+                        <div id="inps"><div id='label'>First Name:</div><div>{applicant?.firstName}</div></div>
+                        <div id="inps"><div id='label'>Middle Name:</div><div>{applicant?.middleName}</div></div>
+                        <div id="inps"><div id='label'>Marital Status:</div><div>{applicant?.maritalStatus}</div></div>
+                        <div id="inps"><div id='label'>Gender:</div><div>{applicant?.gender}</div></div>
+                        <div id="inps"><div id='label'>Nationality:</div><div>{applicant?.nationality}</div></div>
+                        <div id="inps"><div id='label'>Country:</div><div>{applicant?.country}</div></div>
+                        <div id="inps"><div id='label'>NRC / Passport No.:</div><div>{applicant?.idNumber}</div></div>
+                        <div id="inps"><div id='label'>District:</div><div>{applicant?.district}</div></div>
+                        <div id="inps"><div id='label'>T/A:</div><div>{applicant?.ta}</div></div>
+                        <div id="inps"><div id='label'>Village:</div><div>{applicant?.village}</div></div>
+                        <div id="inps"><div id='label'>Date of Birth:</div><div>{new Date(applicant?.dateOfBirth).toLocaleString("en-GB")}</div></div>
+                        <div id="inps"><div id='label'>Place of Birth:</div><div>{applicant?.placeOfBirth}</div></div>
+                        <div id="inps"><div id='label'>Contact Address:</div><div>{applicant?.address}</div></div>
+                        <div id="inps"><div id='label'>Cell:</div><div>{applicant?.phoneCell}</div></div>
+                        <div id="inps"><div id='label'>Home Phone:</div><div>{applicant?.phoneHome}</div></div>
+                        <div id="inps"><div id='label'>Office Phone:</div><div>{applicant?.phoneOffice}</div></div>
+                        <div id="inps"><div id='label'>Email:</div><div>{applicant?.email}</div></div>
                     </div>
 
 
@@ -170,7 +170,7 @@ const ViewApplicant = (props) => {
 
                     <div id="fileNames">
                         <div id="fLeft">
-                            <div id='fileMore' onClick={() => { downLoadFiles(applicant.firstName + "-" + applicant.surname, applicant.uploaderId, "file2") }}>
+                            <div id='fileMore' onClick={() => { downLoadFiles(applicant?.firstName + "-" + applicant?.surname, applicant?.uploaderId, "file2") }}>
                                 View Certificate
                                 <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
                             </div>
@@ -197,7 +197,7 @@ const ViewApplicant = (props) => {
 
                     <h2>C. MODE OF STUDY</h2>
                     <div id="modeST">
-                        {applicant.modeOfStudy?.map((mode, i) => <div key={i} style={{ marginLeft: "20px" }}>{mode}</div>)}
+                        {applicant?.modeOfStudy?.map((mode, i) => <div key={i} style={{ marginLeft: "20px" }}>{mode}</div>)}
                     </div>
 
 
@@ -205,32 +205,32 @@ const ViewApplicant = (props) => {
                     <div id="studentDetails">
                         <div id="inps">
                             <div id='label'>Full Name:</div>
-                            <div>{applicant.guardian?.name}</div>
+                            <div>{applicant?.guardian?.name}</div>
                         </div>
-                        <div id="inps"><div id='label'>Address:</div><div>{applicant.guardian?.address}</div></div>
-                        <div id="inps"><div id='label'>Email:</div><div>{applicant.guardian?.email}</div></div>
-                        <div id="inps"><div id='label'>Cell:</div><div>{applicant.guardian?.cell}</div></div>
+                        <div id="inps"><div id='label'>Address:</div><div>{applicant?.guardian?.address}</div></div>
+                        <div id="inps"><div id='label'>Email:</div><div>{applicant?.guardian?.email}</div></div>
+                        <div id="inps"><div id='label'>Cell:</div><div>{applicant?.guardian?.cell}</div></div>
                     </div>
 
 
                     <h2>E. Motivation & Expectations</h2>
-                    <div>{applicant.expectation}</div>
+                    <div>{applicant?.expectation}</div>
                     <div id='label'>How did you know about UHB?</div>
                     <div id="modeST">
-                        {applicant.refSource?.map((src, i) => <div key={i} style={{ marginLeft: "20px" }}>{src}</div>)}
+                        {applicant?.refSource?.map((src, i) => <div key={i} style={{ marginLeft: "20px" }}>{src}</div>)}
                     </div>
 
 
                     <h2>F. Student Declaration</h2>
                     <div id="studentDetails">
-                        <div id="inps"><div id='label'>Signature:</div><div>{applicant.studentDeclaration?.signature}</div></div>
-                        <div id="inps"><div id='label'>Date:</div><div>{new Date(applicant.studentDeclaration?.date).toLocaleString("en-GB")}</div></div>
+                        <div id="inps"><div id='label'>Signature:</div><div>{applicant?.studentDeclaration?.signature}</div></div>
+                        <div id="inps"><div id='label'>Date:</div><div>{new Date(applicant?.studentDeclaration?.date).toLocaleString("en-GB")}</div></div>
                     </div>
 
 
                     <div id="fileNames">
                         <div id="fLeft">
-                            <div id='fileMore' onClick={() => { downLoadFiles(applicant.firstName + "-" + applicant.surname, applicant.uploaderId, "file3") }}>
+                            <div id='fileMore' onClick={() => { downLoadFiles(applicant?.firstName + "-" + applicant?.surname, applicant?.uploaderId, "file3") }}>
                                 Additional Qualifications
                                 <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
                             </div>
@@ -247,22 +247,22 @@ const ViewApplicant = (props) => {
 
                     <h2>Office Use</h2>
                     <div id="studentDetails">
-                        <div id="inps"><div id='label'>Academic Year:</div><div>{applicant.officeUse?.academicYear}</div></div>
-                        <div id="inps"><div id='label'>Application No.:</div><div>{applicant.officeUse?.applicationNo}</div></div>
-                        <div id="inps"><div id='label'>Receipt No.:</div><div>{applicant.officeUse?.receiptNo}</div></div>
-                        <div id="inps"><div id='label'>Review Date:</div><div>{new Date(applicant.officeUse?.reviewDate).toLocaleString("en-GB")}</div></div>
-                        <div id="inps"><div id='label'>Approved:</div><div>{applicant.officeUse?.approved ? "Yes" : "No"}</div></div>
-                        <div id="inps"><div id='label'>Student No.:</div><div>{applicant.officeUse?.studentNo}</div></div>
-                        <div id="inps"><div id='label'>Admin Signature:</div><div>{applicant.officeUse?.signature}</div></div>
+                        <div id="inps"><div id='label'>Academic Year:</div><div>{applicant?.officeUse?.academicYear}</div></div>
+                        <div id="inps"><div id='label'>Application No.:</div><div>{applicant?.officeUse?.applicationNo}</div></div>
+                        <div id="inps"><div id='label'>Receipt No.:</div><div>{applicant?.officeUse?.receiptNo}</div></div>
+                        <div id="inps"><div id='label'>Review Date:</div><div>{new Date(applicant?.officeUse?.reviewDate).toLocaleString("en-GB")}</div></div>
+                        <div id="inps"><div id='label'>Approved:</div><div>{applicant?.officeUse?.approved ? "Yes" : "No"}</div></div>
+                        <div id="inps"><div id='label'>Student No.:</div><div>{applicant?.officeUse?.studentNo}</div></div>
+                        <div id="inps"><div id='label'>Admin Signature:</div><div>{applicant?.officeUse?.signature}</div></div>
                     </div>
 
                     {/* <div id="downButt">
-                        <button type="submit" id='submit1' className="submit-btn" onClick={() => { updateApplicants("Approved") }} disabled={applicant.status === "Approved" ? true : false}>
+                        <button type="submit" id='submit1' className="submit-btn" onClick={() => { updateApplicant?s("Approved") }} disabled={applicant?.status === "Approved" ? true : false}>
                             {checkSubmit ? "Approving..." : "Approve"}
                             {checkSubmit ? <div className="loader"></div> : <FontAwesomeIcon icon={faRightToBracket} />}
                         </button>
 
-                        <button type="submit2" id='submit2' onClick={() => { updateApplicants("Disapproved") }} disabled={applicant.status === "Disapproved" ? true : false}>
+                        <button type="submit2" id='submit2' onClick={() => { updateApplicant?s("Disapproved") }} disabled={applicant?.status === "Disapproved" ? true : false}>
                             {checkSubmit2 ? "Disapproving..." : "Disapprove"}
                             {checkSubmit2 ? <div className="loader"></div> : <FontAwesomeIcon icon={faThumbsDown} />}
                         </button>

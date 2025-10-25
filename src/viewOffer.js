@@ -85,7 +85,7 @@ const ViewOffer = (props) => {
                     <h4>
                         <input
                             name="program"
-                            value={form.program}
+                            value={props.prog!==""?props.prog:props.applicant.form === "postgrad" ? props.applicant?.programme : props.applicant?.academicDetails?.[0].programme}
                             onChange={handleChange}
                             className="editable long"
                         />

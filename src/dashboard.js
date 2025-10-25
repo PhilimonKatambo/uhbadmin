@@ -107,16 +107,16 @@ const LeftSideBar = () => {
                         </div>
                     </div>
 
-                    <div id='section' onClick={() => { navigate("/News") }}>
+                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/News") }}  >
                         <FontAwesomeIcon icon={faNewspaper} id='icon'></FontAwesomeIcon>
                         <div id='secWord'>Manage News</div>
                     </div>
 
-                    <div id='section' onClick={() => { navigate("/Register") }}>
+                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/Users") }}>
                         <FontAwesomeIcon icon={faNewspaper} id='icon'></FontAwesomeIcon>
-                        <div id='secWord'>Register user</div>
+                        <div id='secWord'>Manage users</div>
                     </div>
-                    <div id='section' onClick={() => { navigate("/History") }}>
+                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/History") }}>
                         <FontAwesomeIcon icon={faHistory} id='icon'></FontAwesomeIcon>
                         <div id='secWord'>History</div>
                     </div>
@@ -162,7 +162,11 @@ const RightSide = () => {
                     throw new Error("Failed to retrive news")
                 } else {
                     const data = await response.json();
-                    setApplicants(data);
+                    const sortedData = [...data].sort((a, b) =>
+                        new Date(b.createdAt) - new Date(a.createdAt)
+                    );
+                    setApplicants(sortedData);
+
                     const i = 0;
                     let xool = []
                     data.forEach(element => {
@@ -237,7 +241,7 @@ const RightSideDown = (props) => {
     };
 
 
-    const updateApplicants = async (update,reason,additionalText) => {
+    const updateApplicants = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.status = update
@@ -257,7 +261,7 @@ const RightSideDown = (props) => {
                     setSelected([])
                     unCheckAll()
                     console.log("Hello")
-                    saveHistory(applicant, update,reason,additionalText)
+                    saveHistory(applicant, update, reason, additionalText)
                 }
             }
 
@@ -269,8 +273,7 @@ const RightSideDown = (props) => {
     }
 
     const user = useSelector((state) => state.user.user);
-    const saveHistory = async (selected, update,reason,additionalText) => {
-
+    const saveHistory = async (applicant, update, reason1, additionalText1) => {
         try {
             const response = await fetch("http://localhost:1200/history", {
                 method: 'POST',
@@ -279,11 +282,12 @@ const RightSideDown = (props) => {
                 },
                 body: JSON.stringify({
                     operator: user._id,
-                    operatorOn: selected._id,
+                    operatorOn: applicant._id,
+                    operatorOnName: applicant.firstName + " " + applicant.surname,
                     operation: update,
-                    operatedType: user.form,
-                    reason: reason || "Common reason",
-                    additionalText: additionalText || "We inform for this user activity",
+                    operatedType: applicant.form,
+                    reason: reason1 ? reason1 : "Common reason",
+                    additionalText: additionalText1 ? additionalText1 : "We would like to inform any information!",
                 })
             })
         } catch (err) {
@@ -292,7 +296,7 @@ const RightSideDown = (props) => {
     }
 
 
-    const updateApplicantsReco = async (update) => {
+    const updateApplicantsReco = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.programme = update
@@ -312,6 +316,7 @@ const RightSideDown = (props) => {
                     refreshed()
                     setSelected([])
                     unCheckAll()
+                    //saveHistory(applicant, update,reason,additionalText)
                 }
             }
 
@@ -409,7 +414,7 @@ const RightSideDown = (props) => {
             <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"denial"} />
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
-            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
+            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory}/>)}
             {showDialog3 ? <RecoDialog msg={msg} isOpen={isOpen3} showDialog={showDialog3} setIsOpen={setIsOpen3} setShowDialog={setShowDialog3} refresh={props.refresh} setRefresh={props.setRefresh} updateApplicants={updateApplicants} updateApplicantsReco={updateApplicantsReco} /> : <div style={{ display: "none" }}></div>}
 
             <div id='rightUp'>

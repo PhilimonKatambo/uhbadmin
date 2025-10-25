@@ -52,6 +52,13 @@ const RecoDialog = (props) => {
                     <div className={`dialog-box ${isOpen ? "open" : ""}`}>
                         <h2 id="diaT">Recommend</h2>
                         <p id="diaMgs">Recommend Selected applicants to:</p>
+
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <input id="reason" type="text" placeholder="Common Reason of recommending"></input>
+                            <textarea id="additional" placeholder="Addition reason"></textarea>
+                        </div>
+                        {/* <textarea id="additional" vaule={"According to applicants' qualifications"} placeholder="Addition reason"></textarea> */}
+
                         <select name="programme" onChange={(e) => setSelected(e.target.value)} id="select">
                             <option value="">-- Select Programme --</option>
                             <option value="School of Business Innovation">School of Business Innovation</option>
@@ -127,14 +134,15 @@ const RecoDialog = (props) => {
                                 School of Education / Bachelor of Science in Education
                             </option>
                         </select>
+
                         <div id='buttsdia'>
                             <button onClick={closeDialog} id="readMore">
                                 <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
                                 <div>Close</div>
                             </button>
                             <button onClick={() => {
-                                props.updateApplicants("Recommended")
-                                props.updateApplicantsReco(selected)
+                                props.updateApplicants("Recommended", document.getElementById("reason").value, document.getElementById("additional").value)
+                                props.updateApplicantsReco(selected,)
                                 closeDialog()
                             }} id="readMore2" style={{ backgroundColor: "red" }}>
                                 <FontAwesomeIcon icon={faCheckDouble}></FontAwesomeIcon>

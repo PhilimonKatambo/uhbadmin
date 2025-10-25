@@ -40,7 +40,6 @@ const SendDenial = (props) => {
         const files = Array.from(e.target.files);
         setReceiptFiles(files);
         setQualifications((prev) => [...prev, ...files]);
-        // setUseTags((prev) => [...prev, ...files.map(() => "file1")]);
     };
 
 
@@ -65,9 +64,7 @@ const SendDenial = (props) => {
             const data = await response.json();
             if (response.ok) {
                 setFeedback("✅ Emails sent successfully!");
-                // setReceiptFiles([]);
-                // setQualifications([]);
-                props.updateApplicants(props.method==="disapproval"?"Disapproved":"Denied")
+                props.updateApplicants(props.method==="disapproval"?"Disapproved":"Denied",subject,message)
             } else {
                 setFeedback("❌ Failed to send: " + (data.error || "Unknown error"));
             }

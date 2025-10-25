@@ -87,7 +87,6 @@ const SendOfferGen = (props) => {
         year: "3 and 4",
         numberInstall: "6",
         years: "2",
-        program: "Bachelor of Arts in Accounting and Finance (Degree Completion Programme)",
         registrationFee: "50,000.00",
         tuitionFeeWords: "Four Hundred and Fifty Thousand Kwacha",
         tuitionFee: "450,000.00",
@@ -107,13 +106,19 @@ const SendOfferGen = (props) => {
         });
     };
 
+    const [prog,setProg] = useState("")
+
+    const handleProg = (e) =>{
+        setProg(e.target.value)
+    }
+
     const [checkOverlay, setOverlay] = useState(false)
 
 
     const sendGen = () => {
         props.selected.map((key, index) => {
             // console.log(props.selected[index].firstName)
-            makeOffer({ firstName: props.selected[index].firstName, surname: props.selected[index].surname, email: props.selected[index].email })
+            makeOffer({ firstName: props.selected[index].firstName, surname: props.selected[index].surname, email: props.selected[index].email, programe: props.selected[index].form === "postgrad" ? props.selected[index].programme : props.selected[index].academicDetails[0].programme })
         })
     }
 
@@ -136,7 +141,7 @@ const SendOfferGen = (props) => {
                         <p>Dear ${user.firstName} ${user.surname}</p>
 
                         <h3>CONDITIONAL OFFER LETTER TO STUDY</h3>
-                        <h4>${form.program}</h4>
+                        <h4>${prog!==""?prog:user.programe}</h4>
 
                         <p>
                         I am writing to congratulate you on behalf of the <b>University of Hebron</b>
@@ -278,7 +283,7 @@ const SendOfferGen = (props) => {
     return (
         <div id='newOverlay' style={{ display: props.checkOverlay2 ? "flex" : "none" }} >
             {/* {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>} */}
-            <ViewOffer checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} form={form} refresh={props.refresh} setRefresh={props.setRefresh} subject={subject} message={message} />
+            <ViewOffer prog={prog} checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} form={form} refresh={props.refresh} setRefresh={props.setRefresh} subject={subject} message={message} />
 
             <div id='sendEmail'>
                 <h2 id='sendTitle'>📧 Send Offers</h2>
@@ -317,8 +322,88 @@ const SendOfferGen = (props) => {
                             ))}
                         </div>
                     </div>
-
+                    <h2>Editing here will apply to all selected applicants</h2>
                     <form id='formChange'>
+                        <div id='inpss'>
+                            <label style={{ display: "block", fontWeight: "bold", marginBottom: "5px" }}>Programme:</label>
+                            <select name="programme" onChange={handleProg} id="select">
+                                <option value="">-- Select Programme --</option>
+                                <option value="School of Business Innovation">School of Business Innovation</option>
+                                <option value="School of Business Innovation / Bachelor of Arts Accounting and Finance">
+                                    School of Business Innovation / Bachelor of Arts Accounting and Finance
+                                </option>
+                                <option value="School of Business Innovation / Bachelor of Arts in Banking and Finance">
+                                    School of Business Innovation / Bachelor of Arts in Banking and Finance
+                                </option>
+                                <option value="School of Business Innovation / Bachelor of Arts in Business Administration">
+                                    School of Business Innovation / Bachelor of Arts in Business Administration
+                                </option>
+                                <option value="School of Business Innovation / Bachelor of Arts in Entrepreneurship">
+                                    School of Business Innovation / Bachelor of Arts in Entrepreneurship
+                                </option>
+                                <option value="School of Business Innovation / Bachelor of Arts in Procurement and Supply Chain Management">
+                                    School of Business Innovation / Bachelor of Arts in Procurement and Supply Chain Management
+                                </option>
+                                <option value="School of Business Innovation / Bachelor of Arts in Marketing">
+                                    School of Business Innovation / Bachelor of Arts in Marketing
+                                </option>
+                                <option value="School of Business Innovation / Master of Arts in Business Administration">
+                                    School of Business Innovation / Master of Arts in Business Administration
+                                </option>
+
+                                <option value="School of Sustainable Development">School of Sustainable Development</option>
+                                <option value="School of Sustainable Development / Bachelor of Arts in Human Resource Development">
+                                    School of Sustainable Development / Bachelor of Arts in Human Resource Development
+                                </option>
+                                <option value="School of Sustainable Development / Bachelor of Arts in Youth Development">
+                                    School of Sustainable Development / Bachelor of Arts in Youth Development
+                                </option>
+                                <option value="School of Sustainable Development / Bachelor of Arts in Community Development">
+                                    School of Sustainable Development / Bachelor of Arts in Community Development
+                                </option>
+                                <option value="School of Sustainable Development / Bachelor of Arts in Guidance and Counseling">
+                                    School of Sustainable Development / Bachelor of Arts in Guidance and Counseling
+                                </option>
+                                <option value="School of Sustainable Development / Bachelor of Science in Public Health">
+                                    School of Sustainable Development / Bachelor of Science in Public Health
+                                </option>
+                                <option value="School of Sustainable Development / Masters in Mass Communication">
+                                    School of Sustainable Development / Masters in Mass Communication
+                                </option>
+                                <option value="School of Sustainable Development / Master of Science in Health Management">
+                                    School of Sustainable Development / Master of Science in Health Management
+                                </option>
+                                <option value="School of Sustainable Development / Master of Arts in Guidance and Counseling">
+                                    School of Sustainable Development / Master of Arts in Guidance and Counseling
+                                </option>
+
+                                <option value="School of Diplomacy and International Relations">School of Diplomacy and International Relations</option>
+                                <option value="School of Diplomacy and International Relations / Master of Arts in Diplomacy and International Relations">
+                                    School of Diplomacy and International Relations / Master of Arts in Diplomacy and International Relations
+                                </option>
+
+                                <option value="School of Theology">School of Theology</option>
+                                <option value="School of Theology / Bachelor of Arts in Theology and Religious Studies">
+                                    School of Theology / Bachelor of Arts in Theology and Religious Studies
+                                </option>
+                                <option value="School of Theology / Masters in Theology and Religious Studies">
+                                    School of Theology / Masters in Theology and Religious Studies
+                                </option>
+                                <option value="School of Theology / PhD in Theology and Religious Studies">
+                                    School of Theology / PhD in Theology and Religious Studies
+                                </option>
+
+                                <option value="School of Education">School of Education</option>
+                                <option value="School of Education / Bachelor of Arts in Education">
+                                    School of Education / Bachelor of Arts in Education
+                                </option>
+                                <option value="School of Education / Bachelor of Science in Education">
+                                    School of Education / Bachelor of Science in Education
+                                </option>
+                            </select>
+                        </div>
+
+
                         {Object.keys(form).map((key) => (
                             <div key={key} id='inpss'>
                                 <label

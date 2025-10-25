@@ -58,7 +58,7 @@ const Login = () => {
         const pass = document.getElementById("passInp").value;
         setLoader(true)
         try {
-            const res = await fetch("http://localhost:9000/login", {
+            const res = await fetch("https://test1-njdgmeykk-phidohphidzs-projects.vercel.app/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, pass })

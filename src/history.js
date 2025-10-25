@@ -11,7 +11,7 @@ import ViewHis from './viewHis'
 const History = () => {
     const [history, setHistory] = useState([])
     const [history2, setHistory2] = useState([])
-    const [status1, setStatus] = useState("Approved")
+    const [status1, setStatus] = useState("All")
     const [refresh, setRefresh] = useState(false)
     const reload = useRef(null)
     useEffect(() => {
@@ -24,8 +24,12 @@ const History = () => {
                     throw new Error("Failed to retrive history")
                 } else {
                     const data = await response.json();
-                    setHistory(data);
-                    setHistory2(data);
+
+                    const sortedData = [...data].sort((a, b) =>
+                        new Date(b.createdAt) - new Date(a.createdAt)
+                    );
+                    setHistory(sortedData);
+                    setHistory2(sortedData);
                 }
             } catch (err) {
                 console.log("error", err)
@@ -169,6 +173,8 @@ const History = () => {
                         <button id='butts' onClick={() => setStatus("Recommended")} style={{ color: status1 === "Recommended" ? "#25517e" : "grey" }}>Recommended</button>
                         <button id='butts' onClick={() => setStatus("Disapproved")} style={{ color: status1 === "Disapproved" ? "#25517e" : "grey" }}>Disapproved</button>
                         <button id='butts' onClick={() => setStatus("Denied")} style={{ color: status1 === "Denied" ? "#25517e" : "grey" }}>Denied</button>
+                        <button id='butts' onClick={() => setStatus("Deleted")} style={{ color: status1 === "Deleted" ? "#25517e" : "grey" }}>Deleted</button>
+
                         <FontAwesomeIcon icon={faRefresh} ref={reload} onClick={refreshed} id='refresh'></FontAwesomeIcon>
                     </div>
 
@@ -235,7 +241,7 @@ const HistoryCard = (props) => {
                     } else {
                         const data = await response.json();
                         setOperated(data);
-                        props.setAutoComplete(prev => [...prev, { name: data.firstName + data.surname, id: data._id }])
+                        props.setAutoComplete(prev => [...prev, { name: data?.firstName + data?.surname, id: data?._id }])
                     }
                 } else {
                     const response = await fetch(`http://localhost:1000/underApply/only/${history.operatorOn}`, {
@@ -247,7 +253,7 @@ const HistoryCard = (props) => {
                         const data = await response.json();
                         if (data) {
                             setOperated(data);
-                            props.setAutoComplete(prev => [...prev, { name: data.firstName + data.surname, id: data._id }])
+                            props.setAutoComplete(prev => [...prev, { name: data?.firstName + data?.surname, id: data?._id }])
                         }
                     }
                 }
@@ -267,7 +273,7 @@ const HistoryCard = (props) => {
                 } else {
                     const data = await response.json();
                     setOperator(data);
-                    props.setAutoComplete(prev => [...prev, { name: data.firstName + data.surname, id: data._id }])
+                    props.setAutoComplete(prev => [...prev, { name: data?.firstName + data?.surname, id: data?._id }])
                 }
 
             } catch (err) {
@@ -317,14 +323,14 @@ const HistoryCard = (props) => {
             }}>
                 <FontAwesomeIcon icon={faEye} />
             </button></td>
-            <td id='tdd' title={`${operator.firstName === "undefined" ?"Loading...": operator.firstName  + " " + operator.surName}`}>{operator.firstName === "undefined" ? "Loading..." : operator.firstName  + " " + operator.surName}</td>
-            <td id='tdd' title={`${history.operation}`}>{history.operation}</td>
-            <td id='tdd' title={`${operated.firstName === "undefined" ? "Loading...": operated.firstName + " " + operated.surname }`}>{operated.firstName === "undefined" ? "Loading..." :operated.firstName + " " + operated.surname }</td>
-            <td id='tdd' title={`${history.operatedType === "postgrad" ? "PostGraduate applicant" : "UnderGraduate applicant"}`}>{history.operatedType === "postgrad" ? "PostGraduate applicant" : "UnderGraduate applicant"}</td>
-            <td id='tdd' title={`${new Date(history.createdAt).toLocaleString()}`}>{new Date(history.createdAt).toLocaleString()}</td>
-            <td id='tdd' title={`${history.reason}`} >{history.reason}</td>
-            <td id='tdd' title={`${history.additionalText}`} >{history.additionalText}</td>
-            <td id='tdd'><FontAwesomeIcon icon={faTrashCan} id='delete2' onClick={() => deleteNews(history._id)}></FontAwesomeIcon></td>
+            <td id='tdd' title={`${operator?.firstName === "undefined" ? "Loading..." : operator?.firstName + " " + operator?.surName}`}>{operator?.firstName === "undefined" ? "Loading..." : operator?.firstName + " " + operator?.surName}</td>
+            <td id='tdd' title={`${history?.operation}`}>{history?.operation}</td>
+            <td id='tdd' title={`${history.operatorOnName}`}>{history.operatorOnName}</td>
+            <td id='tdd' title={`${history?.operatedType === "postgrad" ? "PostGraduate applicant" : "UnderGraduate applicant"}`}>{history?.operatedType === "postgrad" ? "PostGraduate applicant" : "UnderGraduate applicant"}</td>
+            <td id='tdd' title={`${new Date(history?.createdAt).toLocaleString()}`}>{new Date(history?.createdAt).toLocaleString()}</td>
+            <td id='tdd' title={`${history?.reason}`} >{history?.reason}</td>
+            <td id='tdd' title={`${history?.additionalText}`} >{history?.additionalText}</td>
+            <td id='tdd'><FontAwesomeIcon icon={faTrashCan} id='delete2' onClick={() => deleteNews(history?._id)}></FontAwesomeIcon></td>
         </tr>
     )
 }

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import './css/login.css';
 import { animate } from "animejs";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faUserPlus, faEnvelope, faIdCard } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faUserPlus, faEnvelope, faIdCard, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Register = () => {
   const items = []
@@ -47,7 +47,25 @@ const Register = () => {
     setTimeout(() => setIsOpen(true), 10);
   };
 
-  const [userRole,setUserRole] = useState(null)
+  const [userRole, setUserRole] = useState(null)
+  const [loader, setLoader] = useState(false)
+
+  const [pass1, setPass1] = useState("")
+  const [pass2, setPass2] = useState("")
+  const [allSet, setAllSet] = useState(false)
+
+  const checkPass = (e) => {
+    const userPassword = document.getElementById("passInp").value;
+    if (e.target.value !== userPassword) {
+      setPass2("Confirm password should match with first password")
+    } else if (userPassword.length < 8) {
+      setPass1("Password should be 8 or above characters")
+    } else {
+      setAllSet(true)
+      setPass1("")
+      setPass2("")
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,33 +75,42 @@ const Register = () => {
     const userId = makeID()
     const userEmail = document.getElementById("emailInp").value;
     const userPassword = document.getElementById("passInp").value;
-    try {
-      const res = await fetch("http://localhost:9000/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName,
-          surName,
-          userId,
-          userEmail,
-          userPassword,
-          userRole
-        }),
-      });
 
-      const data = await res.json();
+    if (allSet)
+      try {
 
-      if (res.ok) {
-        setFeedBack("Register successful, user can login")
-      } else {
+        setLoader(true)
+        const res = await fetch("http://localhost:9000/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName,
+            surName,
+            userId,
+            userEmail,
+            userPassword,
+            userRole
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setFeedBack("Register successful, user can login")
+          setLoader(false)
+        } else {
+          setMessage(["Register failed", "User cannot be registered, try agin later"]);
+          openDialog()
+          setLoader(false)
+          setAllSet(false)
+        }
+      } catch (error) {
         setMessage(["Register failed", "User cannot be registered, try agin later"]);
         openDialog()
+        setLoader(false)
       }
-    } catch (error) {
-      setMessage(["Register failed", "User cannot be registered, try agin later"]);
-      openDialog()
-    }
   };
+
 
   return (
     <div id="loginPage" style={{ backgroundImage: "url('./assets/images/course_ed.jpg')" }}>
@@ -101,36 +128,50 @@ const Register = () => {
               <FontAwesomeIcon icon={faUserPlus} id='icon' />
             </div>
             <div id='nameTh'>
-              <select required onChange={(e)=>setUserRole(e.target.value)}>
+              <select required onChange={(e) => setUserRole(e.target.value)}>
                 <option>-- Select user role --</option>
                 <option value={"Reception"}>Reception</option>
-                <option value={"Head"}>Head of department</option>
+                <option value={"Head of department"}>Head of department</option>
                 <option value={"Registrer"}>Registrer</option>
-                 <option value={"superior"}>Superior</option>
+                <option value={"Superior"}>Superior</option>
               </select>
             </div>
             <div id='nameTh'>
               <input type='email' id='emailInp' placeholder='Email' required />
               <FontAwesomeIcon icon={faEnvelope} id='icon' />
             </div>
-            <div id='nameTh'>
-              <input
-                type={visible ? "text" : "password"}
-                id='passInp'
-                placeholder='Password'
-                required
-              />
-              {/* <FontAwesomeIcon
-                icon={visible ? faEye : faEyeSlash}
-                id='icon'
-                onClick={() => setVisible(!visible)}
-              /> */}
+            <div id='inpd'>
+              <div id='nameTh'>
+                <input
+                  type={visible ? "text" : "password"}
+                  id='passInp'
+                  placeholder='Password'
+                  required
+
+                  onChange={checkPass}
+                />
+              </div>
+              <div style={{ color: "red", fontSize:".8rem"}}>{pass1}</div>
+            </div>
+
+            <div id='inpd'>
+              <div id='nameTh'>
+                <input
+                  type={visible ? "text" : "password"}
+                  id='confInp'
+                  placeholder='Password'
+                  required
+
+                  onChange={checkPass}
+                />
+              </div>
+              <div style={{ color: "red",fontSize:".8rem" }}>{pass2}</div>
             </div>
           </div>
 
           <button type='submit' id='loginB'>
-            <div>Register</div>
-            <FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>
+            <div>{loader ? "Register..." : "Register"}</div>
+            {loader ? <div className='loader'></div> : <FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>}
           </button>
         </form>
 

@@ -17,6 +17,9 @@ import SendEmail from './sendEmail';
 import { animate, stagger } from "animejs";
 import SendDenial from './denial';
 import { LeftSideBar } from './dashboard';
+import SendOffer from './offerLetter';
+import SendOfferGen from './offerLateGen';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const DashBoard2 = () => {
@@ -57,7 +60,11 @@ const RightSide = () => {
                     throw new Error("Failed to retrive news")
                 }
                 const data = await response.json();
-                setApplicants(data);
+                const sortedData = [...data].sort((a, b) =>
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setApplicants(sortedData);
+
                 const i = 0;
                 let xool = []
                 data.forEach(element => {
@@ -106,7 +113,7 @@ const XoolCard = (props) => {
     const colors = ["#e6e5fa", "#f8e5e9", "#deeff7", "#ffeadb", "#ecedff", "#92dce7"];
     const colors2 = ["#4b37cb", "#dc1e4c", "#1c8ceb", "#f7a027", "#ca58fe", "#022a5d"];
     return (
-        <div id='secCard' style={{ backgroundColor: `${colors[index]}`, boxShadow: props.mode===props.xool?"0px 10px 5px 1px #022a5d": "0px 5px 50px 1px #25517e"}} onClick={() => { props.setMode(props.xool) }}>
+        <div id='secCard' style={{ backgroundColor: `${colors[index]}`, boxShadow: props.mode === props.xool ? "0px 10px 5px 1px #022a5d" : "0px 5px 50px 1px #25517e" }} onClick={() => { props.setMode(props.xool) }}>
             <FontAwesomeIcon icon={faGraduationCap} id='icon2' style={{ backgroundColor: `${colors2[index]}` }}></FontAwesomeIcon>
             <div id='schoolName2'>{props.xool}</div>
             <div id='number'>{num}</div>
@@ -142,7 +149,8 @@ const RightSideDown = (props) => {
     };
 
 
-    const updateApplicants = async (update) => {
+    const user = useSelector((state) => state.user.user);
+    const updateApplicants = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.status = update
@@ -161,6 +169,7 @@ const RightSideDown = (props) => {
                     refreshed()
                     setSelected([])
                     unCheckAll()
+                    saveHistory(applicant, update, reason, additionalText)
                 }
             }
 
@@ -171,18 +180,19 @@ const RightSideDown = (props) => {
         }
     }
 
+    //   const user = useSelector((state) => state.user.user);
 
-    const updateApplicantsReco = async (update) => {
+    const updateApplicantsReco = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.programme = update
-                console.log(update)
+
                 const response = await fetch(`http://localhost:1000/underApplyReco/${applicant._id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ "academicDetails.0.programme": update })
+                    body: JSON.stringify({ programme: update })
                 })
 
                 if (!response.ok) {
@@ -191,6 +201,8 @@ const RightSideDown = (props) => {
                     refreshed()
                     setSelected([])
                     unCheckAll()
+                    saveHistory(applicant, update, reason, additionalText)
+
                 }
             }
 
@@ -200,6 +212,29 @@ const RightSideDown = (props) => {
             setMessage(["Update problem", `Can't be ${update}, try again letter`])
         }
     }
+
+    const saveHistory = async (applicant, update, reason1, additionalText1) => {
+        try {
+            const response = await fetch("http://localhost:1200/history", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    operator: user._id,
+                    operatorOn: applicant._id,
+                    operatorOnName: applicant.firstName + " " + applicant.surname,
+                    operation: update,
+                    operatedType: applicant.form,
+                    reason: reason1 ? reason1 : "Common reason",
+                    additionalText: additionalText1 ? additionalText1 : "We would like to inform any information!",
+                })
+            })
+        } catch (err) {
+            console.log("error", err)
+        }
+    }
+
 
     useEffect(() => {
         setApplicants(props.applicants || []);
@@ -232,6 +267,7 @@ const RightSideDown = (props) => {
     const setRefresh = props.setRefresh;
     const [loader, setLoader] = useState()
     const [checkOverlay, setOverlay] = useState(false)
+    const [checkOverlay3, setOverlay3] = useState(false)
     const [view, setView] = useState([]);
 
     const [isOpen2, setIsOpen2] = useState(false);
@@ -285,30 +321,27 @@ const RightSideDown = (props) => {
 
     return (
         <div id='rightDown'>
+            <SendOfferGen selected={selected} setSelected={setSelected} setOverlay2={setOverlay3} checkOverlay2={checkOverlay3} updateApplicants={updateApplicants} />
             <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"denial"} />
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
-            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
+            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory} />)}
             {showDialog3 ? <RecoDialog msg={msg} isOpen={isOpen3} showDialog={showDialog3} setIsOpen={setIsOpen3} setShowDialog={setShowDialog3} refresh={props.refresh} setRefresh={props.setRefresh} updateApplicants={updateApplicants} updateApplicantsReco={updateApplicantsReco} /> : <div style={{ display: "none" }}></div>}
 
             <div id='rightUp'>
-                <div id='name'  data-title={props.mode}>
-                    <div id='name2'>{props.mode}</div>    
+                <div id='name' data-title={props.mode}>
+                    <div id='name2'>{props.mode}</div>
                 </div>
                 <div id='search'>
                     <input type='text' id='sarchInput' placeholder='Search' onChange={autoFind}></input>
                     <FontAwesomeIcon icon={faSearch} id='searchIcon'></FontAwesomeIcon>
                 </div>
                 <div id='ops'>
-                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Accepted")}>
+                    <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay3(true)}>
                         <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
-                        <div id='approve'>accept</div>
+                        <div id='approve'>Send offer letter</div>
                     </button>
 
-                    <button id='recommend' disabled={selected.length > 0 ? false : true} onClick={() => openDialog3()}>
-                        <FontAwesomeIcon icon={faCheckDouble}></FontAwesomeIcon>
-                        <div id='approve'>Recommend</div>
-                    </button>
                     <button id='deny' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay2(true)}>
                         <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>
                         <div id='approve'>Deny</div>
@@ -326,6 +359,7 @@ const RightSideDown = (props) => {
             <div id='otherButtons'>
                 <div id='otherLeft'>
                     <button id='butts' onClick={() => setStatus("All")} style={{ color: status1 === "All" ? "#25517e" : "grey" }}>All</button>
+                    <button id='butts' onClick={() => setStatus("Offered")} style={{ color: status1 === "Offered" ? "#25517e" : "grey" }}>Offered</button>
                     <button id='butts' onClick={() => setStatus("Accepted")} style={{ color: status1 === "Accepted" ? "#25517e" : "grey" }}>Accepted</button>
                     <button id='butts' onClick={() => setStatus("Approved")} style={{ color: status1 === "Approved" ? "#25517e" : "grey" }}>Approved</button>
                     <button id='butts' onClick={() => setStatus("Recommended")} style={{ color: status1 === "Recommended" ? "#25517e" : "grey" }}>Recommended</button>
@@ -346,7 +380,7 @@ const RightSideDown = (props) => {
                                 <div>{selected.length > 0 ? "Uncheck all" : "Check all"}</div>
                             </button>
                         </th>
-                        <td></td>
+                        <th></th>
                         <th>
                             <div id='th'>
                                 <FontAwesomeIcon icon={fa1} id='icoo'></FontAwesomeIcon>
@@ -407,6 +441,5 @@ const RightSideDown = (props) => {
         </div>
     )
 }
-
 
 export default DashBoard2

@@ -3,7 +3,7 @@ import { faCircleXmark, faRightToBracket, faPrint, faFile, faThumbsDown, faCircl
 import './css/view.css'
 import './css/views2.css'
 import './css/viewHis.css'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Dialog from './dialog';
 import ViewApplicant from './viewApplicant';
 import { faLetterboxd } from '@fortawesome/free-brands-svg-icons';
@@ -26,6 +26,45 @@ const ViewHis = (props) => {
         win.print()
     }
 
+    const [operated, setOperated] = useState({})
+
+    useEffect(() => {
+        const getHistoryUsers = async () => {
+            try {
+
+                if (props.history.operatedType === "postgrad") {
+                    const response = await fetch(`http://localhost:2000/postgradApplicants/only/${props.history.operatorOn}`, {
+                        method: 'GET',
+                    })
+                    if (!response.ok) {
+                        throw new Error("Failed to retrive history")
+                    } else {
+                        const data = await response.json();
+                        setOperated(data);
+                    }
+                } else {
+                    const response = await fetch(`http://localhost:1000/underApply/only/${props.history.operatorOn}`, {
+                        method: 'GET',
+                    })
+                    if (!response.ok) {
+                        throw new Error("Failed to retrive history")
+                    } else {
+                        const data = await response.json();
+                        if (data) {
+                            setOperated(data);
+                        }
+                    }
+                }
+
+            } catch (err) {
+                console.log("error", err)
+            }
+        }
+
+        getHistoryUsers()
+    })
+
+
     return (
         <div id='newOverlay' style={{ display: props.checkOverlay2 ? "flex" : "none" }} >
             {/* {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>} */}
@@ -36,17 +75,22 @@ const ViewHis = (props) => {
                 <div id='data90'>
                     <FontAwesomeIcon icon={faCircleCheck} id='icon1'></FontAwesomeIcon>
                     <label>Operation:</label>
-                    <div id='actual'>{props.history.operation}</div>
+                    <div id='actual'>{props.history?.operation}</div>
                 </div>
                 <div id='data90'>
                     <FontAwesomeIcon icon={faUserPlus} id='icon1'></FontAwesomeIcon>
                     <label>Operator:</label>
-                    <div id='actual'>{props.operator.firstName + " " + props.operator.surName}</div>
+                    <div id='actual'>{props.operator?.firstName + " " + props.operator?.surName}</div>
                 </div>
                 <div id='data90'>
                     <FontAwesomeIcon icon={faGraduationCap} id='icon1'></FontAwesomeIcon>
                     <label>Applicant:</label>
-                    <div id='actual'>{props.operated.firstName + " " + props.operated.surname}</div>
+                    <div id='actual'>{operated?.firstName + " " + operated?.surname}</div>
+                </div>
+                <div id='data90'>
+                    <FontAwesomeIcon icon={faGraduationCap} id='icon1'></FontAwesomeIcon>
+                    <label>Programme:</label>
+                    <div id='actual'>{props.history.operatedType === "postgrad" ? operated?.programme : operated?.academicDetails?.[0].programme}</div>
                 </div>
                 <div id='data90'>
                     <FontAwesomeIcon icon={faTurnUp} id='icon1'></FontAwesomeIcon>
@@ -74,10 +118,10 @@ const ViewHis = (props) => {
                         <FontAwesomeIcon icon={faEye}></FontAwesomeIcon>
                         <div>View Applicant details</div>
                     </button>
-                    <button id='submit1' onClick={() => setOverlay(true)}>
+                    {/* <button id='submit1' onClick={() => setOverlay(true)}>
                         <FontAwesomeIcon icon={faFile}></FontAwesomeIcon>
                         <div>View offer later</div>
-                    </button>
+                    </button> */}
                     <button id='submit1' onClick={() => printForm()}>
                         <FontAwesomeIcon icon={faPrint}></FontAwesomeIcon>
                         <div>Print</div>
@@ -85,7 +129,7 @@ const ViewHis = (props) => {
                 </div>
             </div>
 
-            <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={props.operated} />
+            <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={operated} />
             <FontAwesomeIcon icon={faCircleXmark} id='cancel' onClick={() => { props.setOverlay2(false) }}></FontAwesomeIcon>
         </div>
     )

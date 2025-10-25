@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './css/dashboard.css';
-import { fa1, faBan, faCheckDouble, faCheckToSlot, faComputer, faDeleteLeft, faEye, faEyeDropper, faGraduationCap, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { fa1, faBan, faCheckDouble, faCheckToSlot, faCircleXmark, faComputer, faDeleteLeft, faEye, faEyeDropper, faGraduationCap, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { faFirstOrderAlt } from '@fortawesome/free-brands-svg-icons';
 import { useEffect, useRef, useState } from 'react';
@@ -51,8 +51,12 @@ const ReceRight = () => {
                     throw new Error("Failed to retrive news")
                 }
                 const data = await response.json();
-                setApplicants2(data);
-                setApplicants(data);
+
+                const sortedData = [...data].sort((a, b) =>
+                        new Date(b.createdAt) - new Date(a.createdAt)
+                    );
+                setApplicants2(sortedData);
+                setApplicants(sortedData);
                 const i = 0;
                 data.forEach(element => {
                     allComplete.push(element.firstName + element.surname)
@@ -94,34 +98,14 @@ const ReceRight = () => {
     }
 
 
-    const changeCheck = (div, applicant) => {
-        if (!selected.includes(applicant)) {
-            div.style.color = "#08bb26";
-            setSelected(prev => [...prev, applicant]);
-
-        } else {
-            div.style.color = "grey";
-            setSelected(prev => prev.filter(a => a !== applicant));
-        }
-    };
-
     const openDialog = () => {
         setShowDialog(true);
         setTimeout(() => setIsOpen(true), 10);
     };
 
-    const selectAll = (div) => {
-        const color = window.getComputedStyle(div).color
-        if (color === "rgb(128, 128, 128)") {
-            div.style.color = "#08bb26";
-            //setSelected([...selected, applicants])
-        } else {
-            div.style.color = "grey";
-            // setSelected([])
-        }
-    }
 
-    const updateApplicants = async (update) => {
+
+    const updateApplicants = async (update, reason, additionalText) => {
         try {
             for (const applicant of selected) {
                 applicant.status = update
@@ -142,7 +126,7 @@ const ReceRight = () => {
                         setRefresh(!refresh)
                         setSelected([])
                         unCheckAll()
-                        saveHistory(applicant, update)
+                        saveHistory(applicant, update, reason, additionalText)
                     }
                 } else {
                     const response = await fetch(`http://localhost:2000/postgradApply/${applicant._id}`, {
@@ -160,7 +144,7 @@ const ReceRight = () => {
                         setRefresh(!refresh)
                         setSelected([])
                         unCheckAll()
-                        saveHistory(applicant, update)
+                        saveHistory(applicant, update, reason, additionalText)
                     }
                 }
 
@@ -176,7 +160,7 @@ const ReceRight = () => {
     }
 
     const user = useSelector((state) => state.user.user);
-    const saveHistory = async (selected, update, reason, additionalText) => {
+    const saveHistory = async (selected, update, reason1, additionalText1) => {
 
         try {
             const response = await fetch("http://localhost:1200/history", {
@@ -187,10 +171,11 @@ const ReceRight = () => {
                 body: JSON.stringify({
                     operator: user._id,
                     operatorOn: selected._id,
+                    operatorOnName: selected.firstName+" "+selected.surname,
                     operation: update,
-                    operatedType: user.form,
-                    reason: reason || "Common reason",
-                    additionalText: additionalText || "We inform for this user activity",
+                    operatedType: selected.form,
+                    reason: reason1 ? reason1 : "Common reason",
+                    additionalText: additionalText1 ? additionalText1 : "We would like to inform any information!",
                 })
             })
         } catch (err) {
@@ -287,7 +272,7 @@ const ReceRight = () => {
         <div id='rightSide'>
             {/* delete dialog */}
             <div style={{ display: isOpen2 ? "block" : "none" }}>
-                {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} />)}
+                {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory}/>)}
             </div>
 
             <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"disapproval"} />
@@ -314,7 +299,7 @@ const ReceRight = () => {
                         </button>
 
                         <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive")}>
-                            <FontAwesomeIcon icon={faThumbsDown}></FontAwesomeIcon>
+                            <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
                             <div id='approve'>Inactivate</div>
                         </button>
 

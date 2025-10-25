@@ -58,6 +58,10 @@ const Delete2 = (props) => {
             props.openDialog();
             props.setMessage(["Deleting", 'Selected applicants are deleted']);
             props.setLoader(false)
+
+            selected.map((applicant)=>{
+                props.saveHistory(applicant,"Deleted","Deleting", "Deletion")
+            })
         } catch (e) {
             props.openDialog();
             props.setMessage(["Deleting problem", `Can't be deleted, try again later`]);
