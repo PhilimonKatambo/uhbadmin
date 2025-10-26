@@ -28,7 +28,7 @@ const NewsPage = () => {
     useEffect(() => {
         const getAllFiles = async () => {
             try {
-                const response = await fetch('http://localhost:8000/files', {
+                const response = await fetch('https://mongodb-5-7rnl.onrender.com/postserver/files', {
                     method: 'Get',
                 });
                 if (!response.ok) {
@@ -127,7 +127,7 @@ const NewsCards = (props) => {
     useEffect(() => {
         const handleFile = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/files/${props.news.filename}`, {
+                const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postserver/files/${props.news.filename}`, {
                     method: "GET",
                 });
 
@@ -161,7 +161,7 @@ const NewsCards = (props) => {
     const updateReaction = async (reaction) => {
         const id = props.news._id
         try {
-            const response = await fetch(`http://localhost:8000/files/${id}/react`, {
+            const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postserver/files/${id}/react`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -199,7 +199,7 @@ const NewsCards = (props) => {
     const deleteNews = async (id) => {
         try {
             //alert(id)
-            const response = await fetch(`http://localhost:8000/files/${id}`, {
+            const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postserver/files/${id}`, {
                 method: "DELETE"
             })
             if (!response.ok) {
@@ -218,7 +218,7 @@ const NewsCards = (props) => {
 
     const fetchReactions = async (Id) => {
         try {
-            const res = await fetch(`http://localhost:8000/files/${Id}/reactions`);
+            const res = await fetch(`https://mongodb-5-7rnl.onrender.com/postserver/files/${Id}/reactions`);
             if (!res.ok) throw new Error("Failed to fetch reactions");
 
             const data = await res.json();
@@ -435,7 +435,7 @@ const PostNews = (props) => {
             formData.append("file", file);
 
             try {
-                const response = await fetch("http://localhost:8000/upload", {
+                const response = await fetch("https://mongodb-5-7rnl.onrender.com/postserver/upload", {
                     method: "POST",
                     body: formData,
                 });

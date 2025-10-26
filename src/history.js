@@ -48,7 +48,7 @@ const History = () => {
     })
 
     const refreshed = () => {
-        setRefresh(!refresh);
+        setRefresh(prev => (!prev));
         animate(reload.current, {
             duration: 1200,
             easing: "easeOutExpo",
@@ -228,63 +228,6 @@ const HistoryCard = (props) => {
     const [operated, setOperated] = useState({})
     const [operator, setOperator] = useState({})
 
-    useEffect(() => {
-        const getHistoryUsers = async () => {
-            try {
-
-                if (history.operatedType === "postgrad") {
-                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postgraduate/applicants/only/${history.operatorOn}`, {
-                        method: 'GET',
-                    })
-                    if (!response.ok) {
-                        throw new Error("Failed to retrive history")
-                    } else {
-                        const data = await response.json();
-                        setOperated(data);
-                        props.setAutoComplete(prev => [...prev, { name: data?.firstName + data?.surname, id: data?._id }])
-                    }
-                } else {
-                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApply/only/${history.operatorOn}`, {
-                        method: 'GET',
-                    })
-                    if (!response.ok) {
-                        throw new Error("Failed to retrive history")
-                    } else {
-                        const data = await response.json();
-                        if (data) {
-                            setOperated(data);
-                            props.setAutoComplete(prev => [...prev, { name: data?.firstName + data?.surname, id: data?._id }])
-                        }
-                    }
-                }
-
-            } catch (err) {
-                console.log("error", err)
-            }
-        }
-
-        const getOperator = async () => {
-            try {
-                const response = await fetch(`https://mongodb-5-7rnl.onrender.com/auth/login/only/${history.operator}`, {
-                    method: 'GET',
-                })
-                if (!response.ok) {
-                    throw new Error("Failed to retrive history")
-                } else {
-                    const data = await response.json();
-                    setOperator(data);
-                    props.setAutoComplete(prev => [...prev, { name: data?.firstName + data?.surname, id: data?._id }])
-                }
-
-            } catch (err) {
-                console.log("error", err)
-            }
-        }
-        getHistoryUsers()
-        getOperator()
-    }, [props.refresh])
-
-
     const [msg, setMessage] = useState([])
     const [isOpen, setIsOpen] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
@@ -323,7 +266,7 @@ const HistoryCard = (props) => {
             }}>
                 <FontAwesomeIcon icon={faEye} />
             </button></td>
-            <td id='tdd' title={`${operator?.firstName === "undefined" ? "Loading..." : operator?.firstName + " " + operator?.surName}`}>{operator?.firstName === "undefined" ? "Loading..." : operator?.firstName + " " + operator?.surName}</td>
+            <td id='tdd' title={`${history?.operator}`}>{history?.operator}</td>
             <td id='tdd' title={`${history?.operation}`}>{history?.operation}</td>
             <td id='tdd' title={`${history.operatorOnName}`}>{history.operatorOnName}</td>
             <td id='tdd' title={`${history?.operatedType === "postgrad" ? "PostGraduate applicant" : "UnderGraduate applicant"}`}>{history?.operatedType === "postgrad" ? "PostGraduate applicant" : "UnderGraduate applicant"}</td>

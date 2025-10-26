@@ -39,7 +39,7 @@ const ViewApplicant = (props) => {
     const downLoadFiles = async (uploader, uploaderId, use) => {
         console.log(uploader + " " + uploaderId + " " + use)
         try {
-            const response = await fetch(`http://localhost:4000/files/${uploader}/${uploaderId}/${use}`);
+            const response = await fetch(`https://mongodb-5-7rnl.onrender.com/fileserver/files/${uploader}/${uploaderId}/${use}`);
 
             if (!response.ok) {
                 throw new Error("File not found");
@@ -47,7 +47,6 @@ const ViewApplicant = (props) => {
 
             
             const blob = await response.blob();
-            console.log(blob)
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
@@ -67,42 +66,6 @@ const ViewApplicant = (props) => {
             setLoading(false);
         }
     }
-
-    const updateApplicants = async (update) => {
-        if (update === "Approved") setCheckSubmit(true);
-        else if (update === "Disapproved") setCheckSubmit2(true);
-
-        try {
-            const response = await fetch(`http://localhost:1000/underApply/${applicant?._id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: update })
-            });
-
-            if (!response.ok) {
-                throw new Error("Server returned an error");
-            }
-
-            setMsg([
-                "Update success",
-                `${applicant?.firstName} ${applicant?.surname} has been ${update}.`
-            ]);
-            setShowDialog(true);
-            setIsOpen(true);
-            //props.setRefresh(!props.refresh);
-        } catch (e) {
-            console.error(e); 
-            setMsg([
-                "Update problem",
-                `Can't update ${applicant?.firstName} ${applicant?.surname}. Try again later.`
-            ]);
-            setShowDialog(true);
-            setIsOpen(true);
-        } finally {
-            setCheckSubmit(false);
-            setCheckSubmit2(false);
-        }
-    };
 
 
     return (

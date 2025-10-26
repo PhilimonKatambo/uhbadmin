@@ -2,7 +2,8 @@ import { useRef, useState } from 'react';
 import './css/login.css';
 import { animate } from "animejs";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faUserPlus, faEnvelope, faIdCard, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faUserPlus, faEnvelope, faIdCard, faPlus, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const items = []
@@ -111,13 +112,15 @@ const Register = () => {
       }
   };
 
+  const navigate = useNavigate()
+
 
   return (
     <div id="loginPage" style={{ backgroundImage: "url('./assets/images/course_ed.jpg')" }}>
       <div id='blur'>
         <form id="form2" onSubmit={handleSubmit}>
           <div id='logoFooter2' style={{ backgroundImage: "url('./assets/logos/logo3.jpg')" }}></div>
-          <div id='feedB'>{feedBack}</div>
+
           <div id='formDown'>
             <div id='nameTh'>
               <input type='text' id='firstNameInp' placeholder='First Name' required />
@@ -151,7 +154,7 @@ const Register = () => {
                   onChange={checkPass}
                 />
               </div>
-              <div style={{ color: "red", fontSize:".8rem"}}>{pass1}</div>
+              <div style={{ color: "red", fontSize: ".8rem" }}>{pass1}</div>
             </div>
 
             <div id='inpd'>
@@ -165,8 +168,13 @@ const Register = () => {
                   onChange={checkPass}
                 />
               </div>
-              <div style={{ color: "red",fontSize:".8rem" }}>{pass2}</div>
+              <div style={{ color: "red", fontSize: ".8rem" }}>{pass2}</div>
             </div>
+          </div>
+
+          <div id='feedB' onClick={() => { navigate("/") }}>
+            {feedBack}
+            {!feedBack ? <div></div> : <FontAwesomeIcon icon={faArrowRightFromBracket}></FontAwesomeIcon>}
           </div>
 
           <button type='submit' id='loginB'>

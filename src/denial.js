@@ -56,7 +56,7 @@ const SendDenial = (props) => {
                 formData.append("attachments", file);
             }
 
-            const response = await fetch("http://localhost:5000/send-emails", {
+            const response = await fetch("https://mongodb-5-7rnl.onrender.com/sendEmail/send-emails", {
                 method: "POST",
                 body: formData,
             });

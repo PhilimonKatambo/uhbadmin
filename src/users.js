@@ -3,7 +3,7 @@ import './css/history.css'
 import './css/users.css'
 import { LeftSideBar } from './dashboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faGreaterThanEqual, faPlus, faRefresh, faSearch, faTrashCan, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faGreaterThanEqual, faPlus, faRefresh, faSearch, faTrashCan, faUser, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { animate, stagger } from "animejs";
 import $ from 'jquery'
 import Dialog from './dialog'
@@ -124,7 +124,7 @@ const Users = () => {
     const deleteAll = async () => {
         try {
             Users.map(async (hist) => {
-                const response = await fetch(`http://localhost:1200/Users/${hist._id}`, {
+                const response = await fetch(`https://mongodb-5-7rnl.onrender.com/auth/users/${hist._id}`, {
                     method: "DELETE"
                 })
                 if (!response.ok) {
@@ -154,7 +154,7 @@ const Users = () => {
                         </div>
                         <button onClick={() => { navigate("/Register") }} id='reg1'>
                             <div>Add user</div>
-                            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                            <FontAwesomeIcon icon={faUserPlus}></FontAwesomeIcon>
                         </button>
                     </div>
                     <div id='filterC'>

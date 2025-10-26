@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './css/dashboard.css';
-import { fa1, faAddressCard, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faGraduationCap, faHeading, faHeadSideCough, faHistory, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
+import { fa1, faAddressCard, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faGraduationCap, faHeading, faHeadSideCough, faHistory, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { faFirstOrderAlt } from '@fortawesome/free-brands-svg-icons';
 import { useEffect, useRef, useState } from 'react';
@@ -113,7 +113,7 @@ const LeftSideBar = () => {
                     </div>
 
                     <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/Users") }}>
-                        <FontAwesomeIcon icon={faNewspaper} id='icon'></FontAwesomeIcon>
+                        <FontAwesomeIcon icon={faUsers} id='icon'></FontAwesomeIcon>
                         <div id='secWord'>Manage users</div>
                     </div>
                     <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/History") }}>

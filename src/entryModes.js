@@ -56,7 +56,7 @@ const OfferLetterForm = (props) => {
             const pdfFile = new File([pdfBlob], "offer-letter.pdf", { type: "application/pdf" });
 
             formData.append("attachments", pdfFile);
-            const response = await fetch("http://localhost:5000/send-emails2", {
+            const response = await fetch("https://mongodb-5-7rnl.onrender.com/sendEmail/send-emails2", {
                 method: "POST",
                 body: formData,
             });

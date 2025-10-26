@@ -170,7 +170,7 @@ const ReceRight = () => {
                 },
                 body: JSON.stringify({
                     operator:user.firstName+" "+user.surName,
-                    operatorId: user._id,
+                    operatorId: user._id || "No operator",
                     operatorOn: selected._id,
                     operatorOnName: selected.firstName+" "+selected.surname,
                     operation: update,

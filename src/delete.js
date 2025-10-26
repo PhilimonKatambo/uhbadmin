@@ -16,14 +16,14 @@ const Delete2 = (props) => {
             await Promise.all(
                 selected.map(async (applicant) => {
                     if (applicant.form === "undergrad") {
-                        const response = await fetch(`http://localhost:1000/applicants/${applicant._id}`, {
+                        const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/applicants/${applicant._id}`, {
                             method: "DELETE",
                         });
                         if (!response.ok) {
                             console.error(`Failed to delete files for ${applicant._id}`);
                         }
                     } else {
-                        const response = await fetch(`http://localhost:2000/postgradApplicants/${applicant._id}`, {
+                        const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postgraduate/applicants/${applicant._id}`, {
                             method: "DELETE",
                         });
                         if (!response.ok) {
@@ -45,7 +45,7 @@ const Delete2 = (props) => {
         try {
             await Promise.all(
                 selected.map(async (applicant) => {
-                    const response = await fetch(`http://localhost:4000/files/${applicant.uploaderId}`, {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/fileserver/files/${applicant.uploaderId}`, {
                         method: "DELETE",
                     });
                     if (!response.ok) {

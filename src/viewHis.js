@@ -33,6 +33,16 @@ const ViewHis = (props) => {
             try {
 
                 if (props.history.operatedType === "postgrad") {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postgraduate/postApply/only/${props.history.operatorOn}`, {
+                        method: 'GET',
+                    })
+                    if (!response.ok) {
+                        throw new Error("Failed to retrive history")
+                    } else {
+                        const data = await response.json()
+                        setOperated(data);
+                    }
+                } else {
                     const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApply/only/${props.history.operatorOn}`, {
                         method: 'GET',
                     })
@@ -41,18 +51,7 @@ const ViewHis = (props) => {
                     } else {
                         const data = await response.json();
                         setOperated(data);
-                    }
-                } else {
-                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postgraduate/postApply/only/${props.history.operatorOn}`, {
-                        method: 'GET',
-                    })
-                    if (!response.ok) {
-                        throw new Error("Failed to retrive history")
-                    } else {
-                        const data = await response.json();
-                        if (data) {
-                            setOperated(data);
-                        }
+
                     }
                 }
 
@@ -62,7 +61,7 @@ const ViewHis = (props) => {
         }
 
         getHistoryUsers()
-    })
+    }, [])
 
 
     return (
@@ -80,7 +79,7 @@ const ViewHis = (props) => {
                 <div id='data90'>
                     <FontAwesomeIcon icon={faUserPlus} id='icon1'></FontAwesomeIcon>
                     <label>Operator:</label>
-                    <div id='actual'>{props.operator?.firstName + " " + props.operator?.surName}</div>
+                    <div id='actual'>{props.history.operator}</div>
                 </div>
                 <div id='data90'>
                     <FontAwesomeIcon icon={faGraduationCap} id='icon1'></FontAwesomeIcon>
