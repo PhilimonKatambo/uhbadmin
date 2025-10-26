@@ -20,7 +20,7 @@ const Users = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const response = await fetch("http://localhost:9000/Users", {
+                const response = await fetch("https://mongodb-5-7rnl.onrender.com/auth/users", {
                     method: 'GET',
                 })
                 if (!response.ok) {

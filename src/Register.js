@@ -80,7 +80,7 @@ const Register = () => {
       try {
 
         setLoader(true)
-        const res = await fetch("http://localhost:9000/users", {
+        const res = await fetch("https://mongodb-5-7rnl.onrender.com/auth/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

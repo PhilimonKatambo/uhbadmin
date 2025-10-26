@@ -44,7 +44,7 @@ const ReceRight = () => {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await fetch('http://localhost:1000/applicants', {
+                const response = await fetch('https://mongodb-5-7rnl.onrender.com/undergraduate/applicants', {
                     method: 'GET',
                 });
                 if (!response.ok) {
@@ -74,7 +74,7 @@ const ReceRight = () => {
 
     const getData2 = async () => {
         try {
-            const response = await fetch('http://localhost:2000/postgradApplicants', {
+            const response = await fetch('https://mongodb-5-7rnl.onrender.com/postgraduate/applicants', {
                 method: 'GET',
             });
             if (!response.ok) {
@@ -111,7 +111,7 @@ const ReceRight = () => {
                 applicant.status = update
 
                 if (applicant.form === "undergrad") {
-                    const response = await fetch(`http://localhost:1000/underApply/${applicant._id}`, {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApply/${applicant._id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json"
@@ -129,7 +129,7 @@ const ReceRight = () => {
                         saveHistory(applicant, update, reason, additionalText)
                     }
                 } else {
-                    const response = await fetch(`http://localhost:2000/postgradApply/${applicant._id}`, {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postgraduate/apply/${applicant._id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json"
@@ -163,13 +163,14 @@ const ReceRight = () => {
     const saveHistory = async (selected, update, reason1, additionalText1) => {
 
         try {
-            const response = await fetch("http://localhost:1200/history", {
+            const response = await fetch("https://mongodb-5-7rnl.onrender.com/history/", {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    operator: user._id,
+                    operator:user.firstName+" "+user.surName,
+                    operatorId: user._id,
                     operatorOn: selected._id,
                     operatorOnName: selected.firstName+" "+selected.surname,
                     operation: update,

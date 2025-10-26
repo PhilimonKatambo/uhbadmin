@@ -17,7 +17,7 @@ const History = () => {
     useEffect(() => {
         const getHistory = async () => {
             try {
-                const response = await fetch("http://localhost:1200/history", {
+                const response = await fetch("https://mongodb-5-7rnl.onrender.com/history/", {
                     method: 'GET',
                 })
                 if (!response.ok) {
@@ -127,7 +127,7 @@ const History = () => {
     const deleteAll = async () => {
         try {
             history.map(async (hist) => {
-                const response = await fetch(`http://localhost:1200/history/${hist._id}`, {
+                const response = await fetch(`https://mongodb-5-7rnl.onrender.com/history/${hist._id}`, {
                     method: "DELETE"
                 })
                 if (!response.ok) {
@@ -233,7 +233,7 @@ const HistoryCard = (props) => {
             try {
 
                 if (history.operatedType === "postgrad") {
-                    const response = await fetch(`http://localhost:2000/postgradApplicants/only/${history.operatorOn}`, {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postgraduate/applicants/only/${history.operatorOn}`, {
                         method: 'GET',
                     })
                     if (!response.ok) {
@@ -244,7 +244,7 @@ const HistoryCard = (props) => {
                         props.setAutoComplete(prev => [...prev, { name: data?.firstName + data?.surname, id: data?._id }])
                     }
                 } else {
-                    const response = await fetch(`http://localhost:1000/underApply/only/${history.operatorOn}`, {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApply/only/${history.operatorOn}`, {
                         method: 'GET',
                     })
                     if (!response.ok) {
@@ -265,7 +265,7 @@ const HistoryCard = (props) => {
 
         const getOperator = async () => {
             try {
-                const response = await fetch(`http://localhost:9000/login/only/${history.operator}`, {
+                const response = await fetch(`https://mongodb-5-7rnl.onrender.com/auth/login/only/${history.operator}`, {
                     method: 'GET',
                 })
                 if (!response.ok) {
@@ -297,7 +297,7 @@ const HistoryCard = (props) => {
     const deleteNews = async (id) => {
         try {
             //alert(id)
-            const response = await fetch(`http://localhost:1200/history/${id}`, {
+            const response = await fetch(`https://mongodb-5-7rnl.onrender.com/history/${id}`, {
                 method: "DELETE"
             })
             if (!response.ok) {

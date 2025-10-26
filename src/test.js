@@ -207,7 +207,8 @@ const RightSideDown = (props) => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    operator: user._id,
+                    operator:user.firstName+" "+user.surName,
+                    operatorId: user._id,
                     operatorOn: selected._id,
                     operatorOnName: selected.firstName+" "+selected.surname,
                     operation: update,

@@ -155,7 +155,7 @@ const RightSide = () => {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await fetch('http://localhost:1000/applicants', {
+                const response = await fetch('https://mongodb-5-7rnl.onrender.com/undergraduate/applicants', {
                     method: 'Get',
                 });
                 if (!response.ok) {
@@ -246,7 +246,7 @@ const RightSideDown = (props) => {
             for (const applicant of selected) {
                 applicant.status = update
 
-                const response = await fetch(`http://localhost:1000/underApply/${applicant._id}`, {
+                const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApply/${applicant._id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -275,13 +275,14 @@ const RightSideDown = (props) => {
     const user = useSelector((state) => state.user.user);
     const saveHistory = async (applicant, update, reason1, additionalText1) => {
         try {
-            const response = await fetch("http://localhost:1200/history", {
+            const response = await fetch("https://mongodb-5-7rnl.onrender.com/history/", {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    operator: user._id,
+                    operator:user.firstName+" "+user.surName,
+                    operatorId: user._id,
                     operatorOn: applicant._id,
                     operatorOnName: applicant.firstName + " " + applicant.surname,
                     operation: update,
@@ -301,7 +302,7 @@ const RightSideDown = (props) => {
             for (const applicant of selected) {
                 applicant.programme = update
                 console.log(update)
-                const response = await fetch(`http://localhost:1000/underApplyReco/${applicant._id}`, {
+                const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApplyReco/${applicant._id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"

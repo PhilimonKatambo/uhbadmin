@@ -33,7 +33,7 @@ const ViewHis = (props) => {
             try {
 
                 if (props.history.operatedType === "postgrad") {
-                    const response = await fetch(`http://localhost:2000/postgradApplicants/only/${props.history.operatorOn}`, {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApply/only/${props.history.operatorOn}`, {
                         method: 'GET',
                     })
                     if (!response.ok) {
@@ -43,7 +43,7 @@ const ViewHis = (props) => {
                         setOperated(data);
                     }
                 } else {
-                    const response = await fetch(`http://localhost:1000/underApply/only/${props.history.operatorOn}`, {
+                    const response = await fetch(`https://mongodb-5-7rnl.onrender.com/postgraduate/postApply/only/${props.history.operatorOn}`, {
                         method: 'GET',
                     })
                     if (!response.ok) {
