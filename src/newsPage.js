@@ -253,7 +253,7 @@ const NewsCards = (props) => {
                             <FontAwesomeIcon icon={faTrashCan} id='deleteNews'></FontAwesomeIcon>
                         </div>
                     </div>
-                    <ReadNews checkOverlay={checkOverlay} setOverlay={setOverlay} news={props.news} file={file} fileType={fileType} updateReaction={updateReaction} deleteNews={deleteNews} reactions={reactions} like={like} dislike={dislike} setLike={setLike} setDislike={setDislike}/>
+                    <ReadNews checkOverlay={checkOverlay} setOverlay={setOverlay} news={props.news} file={file} fileType={fileType} updateReaction={updateReaction} deleteNews={deleteNews} reactions={reactions} like={like} dislike={dislike} setLike={setLike} setDislike={setDislike} />
                     <div id="newsMore2">
                         <div id="newsTitle2">
                             <div>{news.metadata.title}</div>

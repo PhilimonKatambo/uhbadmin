@@ -37,7 +37,6 @@ const ViewApplicant = (props) => {
     const [loading, setLoading] = useState(false);
 
     const downLoadFiles = async (uploader, uploaderId, use) => {
-        console.log(uploader + " " + uploaderId + " " + use)
         try {
             const response = await fetch(`https://mongodb-5-7rnl.onrender.com/fileserver/files/${uploader}/${uploaderId}/${use}`);
 
