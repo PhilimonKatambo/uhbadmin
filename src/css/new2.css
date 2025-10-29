@@ -297,6 +297,8 @@
 }
 
 #postNews {
+    display: flex;
+    gap: 5px;
     margin: 0 auto;
     width: fit-content;
     height: fit-content;
