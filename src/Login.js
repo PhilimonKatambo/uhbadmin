@@ -54,14 +54,14 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const name = document.getElementById("nameInp").value;
+        const email = document.getElementById("nameInp").value;
         const pass = document.getElementById("passInp").value;
         setLoader(true)
         try {
             const res = await fetch("https://mongodb-5-7rnl.onrender.com/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, pass })
+                body: JSON.stringify({ email, pass })
             });
 
             if (res.ok) {
@@ -90,7 +90,7 @@ const Login = () => {
                     <div id='formDown'>
 
                         <div id='nameTh'>
-                            <input type='text' id='nameInp' placeholder='Name' required></input>
+                            <input type='email' id='nameInp' placeholder='Name' required></input>
                             <FontAwesomeIcon icon={faUser} id='icon'></FontAwesomeIcon>
                         </div>
                         <div id='nameTh'>
