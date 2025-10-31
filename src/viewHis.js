@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import Dialog from './dialog';
 import ViewApplicant from './viewApplicant';
 import { faLetterboxd } from '@fortawesome/free-brands-svg-icons';
+import { animate } from 'animejs';
 
 
 const ViewHis = (props) => {
@@ -63,6 +64,22 @@ const ViewHis = (props) => {
         getHistoryUsers()
     }, [])
 
+    useEffect(() => {
+        const dialog = formRef.current;
+        if (!dialog) return;
+
+        if (props.checkOverlay2) {
+            animate(dialog, {
+                duration: 300,
+                easing: "easeOut",
+                keyframes: [
+                    { x: 0, opacity: 1 }
+                ]
+            });
+        } else {
+            animate(dialog, { x: "10%", opacity: 0 }, { duration: 0.05, ease: "easeIn" });
+        }
+    }, [props.checkOverlay2]);
 
     return (
         <div id='newOverlay' style={{ display: props.checkOverlay2 ? "flex" : "none" }} >

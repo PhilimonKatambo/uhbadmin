@@ -2,8 +2,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faRightToBracket, faPrint, faFile, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import './css/view.css'
 import './css/views2.css'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Dialog from './dialog';
+import { animate } from 'animejs';
 
 
 const ViewApplicant = (props) => {
@@ -66,13 +67,31 @@ const ViewApplicant = (props) => {
         }
     }
 
+    const dialogRef = useRef(null);
+    
+        useEffect(() => {
+            const dialog = dialogRef.current;
+            if (!dialog) return;
+    
+            if (props.checkOverlay) {
+                animate(dialog, {
+                    duration: 300,
+                    easing: "easeOut",
+                    keyframes: [
+                        {x: 0,opacity: 1}
+                    ]
+                });
+            } else {
+                animate(dialog, { x: "10%", opacity: 0 }, { duration: 0.05, ease: "easeIn" });
+            }
+        }, [props.checkOverlay]);
+
 
     return (
         <div id='newOverlay' style={{ display: props.checkOverlay ? "flex" : "none" }} >
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
 
-            <div id="undergradPage">
-
+            <div id="undergradPage" ref={dialogRef}>
                 <div className="form-container" ref={formRef}>
                     <h2>UHB Undergraduate Application Form</h2>
                     <img id="coverPage" src="./assets/images/coverPage.png" alt="cover" />

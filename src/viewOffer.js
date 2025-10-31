@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Dialog from './dialog';
 import html2pdf from 'html2pdf.js';
 import './css/entryMode.css';
+import { animate } from 'animejs';
 
 
 const ViewOffer = (props) => {
@@ -66,12 +67,32 @@ const ViewOffer = (props) => {
         }
     };
 
+    const dialogRef = useRef(null);
+
+    useEffect(() => {
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+
+        if (props.checkOverlay) {
+            animate(dialog, {
+                duration: 300,
+                easing: "easeOut",
+                keyframes: [
+                    { x: 0, opacity: 1 }
+                ]
+            });
+        } else {
+            animate(dialog, { x: "10%", opacity: 0 }, { duration: 0.05, ease: "easeIn" });
+        }
+    }, [props.checkOverlay]);
+
+
     return (
         <div id='newOverlay2' style={{ display: props.checkOverlay ? "flex" : "none" }} >
             {/* {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>} */}
 
 
-            <div className="offer-letter" id='offer-letter'>
+            <div className="offer-letter" id='offer-letter' ref={dialogRef}>
                 <div style={{ backgroundImage: "url(./assets/logos/logo3.jpg" }} id='logoBack'></div>
 
                 <div id='formStafff'>
@@ -85,7 +106,7 @@ const ViewOffer = (props) => {
                     <h4>
                         <input
                             name="program"
-                            value={props.prog!==""?props.prog:props.applicant.form === "postgrad" ? props.applicant?.programme : props.applicant?.academicDetails?.[0].programme}
+                            value={props.prog !== "" ? props.prog : props.applicant.form === "postgrad" ? props.applicant?.programme : props.applicant?.academicDetails?.[0].programme}
                             onChange={handleChange}
                             className="editable long"
                         />

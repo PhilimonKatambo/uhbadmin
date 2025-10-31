@@ -289,7 +289,7 @@ const ReceRight = () => {
                         <FontAwesomeIcon icon={faSearch} id='searchIcon'></FontAwesomeIcon>
                     </div>
                     <div id='ops'>
-                        <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Approved")}>
+                        <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Approved",document.getElementById("reas").value)}>
                             <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
                             <div id='approve'>Approve</div>
                         </button>
@@ -299,7 +299,7 @@ const ReceRight = () => {
                             <div id='approve'>Disapprove</div>
                         </button>
 
-                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive")}>
+                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive",document.getElementById("reas").value)}>
                             <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
                             <div id='approve'>Inactivate</div>
                         </button>
@@ -321,6 +321,9 @@ const ReceRight = () => {
                         <button id='butts' onClick={() => setStatus("Approved")} style={{ color: status1 === "Approved" ? "#25517e" : "grey" }}>Approved</button>
                         <button id='butts' onClick={() => setStatus("Disapproved")} style={{ color: status1 === "Disapproved" ? "#25517e" : "grey" }}>Disapproved</button>
                         <FontAwesomeIcon icon={faRefresh} ref={reload} onClick={refreshed} id='refresh'></FontAwesomeIcon>
+                    </div>
+                    <div id='search1'>
+                        <input type='text' id='reas' placeholder='Reason for operation!' ></input>
                     </div>
                     <div id='otherRight'>
                         {selected.length} Selected

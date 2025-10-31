@@ -5,6 +5,7 @@ import './css/views2.css'
 import { useEffect, useRef, useState } from 'react';
 import Dialog from './dialog';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { animate } from 'animejs';
 
 
 const SendDenial = (props) => {
@@ -75,13 +76,33 @@ const SendDenial = (props) => {
         }
     };
 
+    const dialogRef = useRef(null);
+    
+        useEffect(() => {
+            const dialog = dialogRef.current;
+            if (!dialog) return;
+    
+            if (props.checkOverlay2) {
+                animate(dialog, {
+                    duration: 300,
+                    easing: "easeOut",
+                    keyframes: [
+                        { x: 0, opacity: 1 }
+                    ]
+                });
+            } else {
+                animate(dialog, { x: "10%", opacity: 0 }, { duration: 0.05, ease: "easeIn" });
+            }
+        }, [props.checkOverlay2]);
+
+
 
 
     return (
         <div id='newOverlay' style={{ display: props.checkOverlay2 ? "flex" : "none" }} >
             {/* {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>} */}
 
-            <div id='sendEmail'>
+            <div id='sendEmail' ref={dialogRef}>
                 <h2 id='sendTitle'>📧 {`Send ${props.method} message`}</h2>
 
                 <form onSubmit={sendEmails} id='sendForm1'>

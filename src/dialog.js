@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./css/dialog.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCancel, faCheckDouble, faTrashCan, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { animate } from "animejs";
 
 const Dialog = (props) => {
 
@@ -45,11 +46,30 @@ const RecoDialog = (props) => {
 
     const [selected, setSelected] = useState()
 
+    const dialogRef = useRef(null);
+
+    useEffect(() => {
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+
+        if (showDialog) {
+            animate(dialog, {
+                duration: 50,
+                easing: "easeOut",
+                keyframes: [
+                    {x: 0,opacity: 1}
+                ]
+            });
+        } else {
+            animate(dialog, { x: "10%", opacity: 0 }, { duration: 0.05, ease: "easeIn" });
+        }
+    }, [showDialog]);
+
     return (
         <div style={{ display: isOpen ? "block" : "none" }}>
             {showDialog && (
-                <div className={`dialog-overlay ${isOpen ? "open" : ""}`}>
-                    <div className={`dialog-box ${isOpen ? "open" : ""}`}>
+                <div className={`dialog-overlay ${isOpen ? "open" : ""} `}>
+                    <div className={`dialog-box ${isOpen ? "open" : ""}`} style={{ transform: "translateX(10%)" }} ref={dialogRef}>
                         <h2 id="diaT">Recommend</h2>
                         <p id="diaMgs">Recommend Selected applicants to:</p>
 

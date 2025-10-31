@@ -7,6 +7,7 @@ import Dialog from './dialog';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import ViewOffer from './viewOffer';
 import html2pdf from 'html2pdf.js';
+import { animate } from 'animejs';
 
 
 const SendOfferGen = (props) => {
@@ -106,9 +107,9 @@ const SendOfferGen = (props) => {
         });
     };
 
-    const [prog,setProg] = useState("")
+    const [prog, setProg] = useState("")
 
-    const handleProg = (e) =>{
+    const handleProg = (e) => {
         setProg(e.target.value)
     }
 
@@ -141,7 +142,7 @@ const SendOfferGen = (props) => {
                         <p>Dear ${user.firstName} ${user.surname}</p>
 
                         <h3>CONDITIONAL OFFER LETTER TO STUDY</h3>
-                        <h4>${prog!==""?prog:user.programe}</h4>
+                        <h4>${prog !== "" ? prog : user.programe}</h4>
 
                         <p>
                         I am writing to congratulate you on behalf of the <b>University of Hebron</b>
@@ -276,16 +277,33 @@ const SendOfferGen = (props) => {
         } finally {
             setLoading(false);
         }
-
-
     }
+
+    const dialogRef = useRef(null);
+
+    useEffect(() => {
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+
+        if (props.checkOverlay2) {
+            animate(dialog, {
+                duration: 300,
+                easing: "easeOut",
+                keyframes: [
+                    { x: 0, opacity: 1 }
+                ]
+            });
+        } else {
+            animate(dialog, { x: "10%", opacity: 0 }, { duration: 0.05, ease: "easeIn" });
+        }
+    }, [props.checkOverlay2]);
 
     return (
         <div id='newOverlay' style={{ display: props.checkOverlay2 ? "flex" : "none" }} >
             {/* {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>} */}
             <ViewOffer prog={prog} checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} form={form} refresh={props.refresh} setRefresh={props.setRefresh} subject={subject} message={message} />
 
-            <div id='sendEmail'>
+            <div id='sendEmail' ref={dialogRef}>
                 <h2 id='sendTitle'>📧 Send Offers</h2>
 
                 <form onSubmit={sendEmails} id='sendForm1'>

@@ -7,11 +7,12 @@ import { useEffect, useRef, useState } from 'react';
 import Dialog from './dialog';
 import ViewApplicant from './viewApplicant';
 import { faLetterboxd } from '@fortawesome/free-brands-svg-icons';
+import { animate } from 'animejs';
 
 
 const ViewUser = (props) => {
 
-    const User=props.User
+    const User = props.User
     const [checkOverlay, setOverlay] = useState(false)
     const formRef = useRef(null)
     const printForm = () => {
@@ -55,6 +56,24 @@ const ViewUser = (props) => {
         }
     }
 
+
+    useEffect(() => {
+        const dialog = formRef.current;
+        if (!dialog) return;
+
+        if (props.checkOverlay2) {
+            animate(dialog, {
+                duration: 300,
+                easing: "easeOut",
+                keyframes: [
+                    { x: 0, opacity: 1 }
+                ]
+            });
+        } else {
+            animate(dialog, { x: "10%", opacity: 0 }, { duration: 0.05, ease: "easeIn" });
+        }
+    }, [props.checkOverlay2]);
+
     return (
 
         <div id='newOverlay' style={{ display: props.checkOverlay2 ? "flex" : "none" }} >
@@ -88,7 +107,7 @@ const ViewUser = (props) => {
                     <label>UserRole:</label>
                     <div id='actual'>{User?.userRole}</div>
                 </div>
-                
+
                 <div id="downButt" style={{ zIndex: "100000" }}>
                     <button id='submit1' onClick={() => setOverlay(true)}>
                         <FontAwesomeIcon icon={faEye}></FontAwesomeIcon>
@@ -98,7 +117,7 @@ const ViewUser = (props) => {
                         <FontAwesomeIcon icon={faPrint}></FontAwesomeIcon>
                         <div>Print</div>
                     </button>
-                    <button  onClick={() => props.deleteNews(User?._id)} style={{backgroundColor:"red",color:"White",border:"0px", padding:"10px 20px",borderRadius:"10px",display:"flex",width:"fit-content",gap:"10px"}}>
+                    <button onClick={() => props.deleteNews(User?._id)} style={{ backgroundColor: "red", color: "White", border: "0px", padding: "10px 20px", borderRadius: "10px", display: "flex", width: "fit-content", gap: "10px" }}>
                         <FontAwesomeIcon icon={faTrashCan}></FontAwesomeIcon>
                         <div>Delete</div>
                     </button>

@@ -3,7 +3,7 @@
     background-size: cover;
     margin: 0;
     width: 100%;
-    height: 100vh;
+    height: fit-content;
 }
 
 #blur {
@@ -21,11 +21,12 @@
 
 #box {
     flex: 1;
-    height: 200px;
+    height: fit-content;
     background-color: #fcfbf8;
     transition: all .5s ease-in-out;
     border: 0px;
     background: transparent;
+    
 }
 
 #boxIn {
