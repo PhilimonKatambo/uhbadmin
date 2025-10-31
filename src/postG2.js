@@ -190,7 +190,7 @@ const RightSideDown = (props) => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    operator:user.firstName+" "+user.surName,
+                    operator: user.firstName + " " + user.surName,
                     operatorId: user._id,
                     operatorOn: applicant._id,
                     operatorOnName: applicant.firstName + " " + applicant.surname,
@@ -328,7 +328,7 @@ const RightSideDown = (props) => {
             <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"denial"} />
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
-            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory}/>)}
+            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory} />)}
             {showDialog3 ? <RecoDialog msg={msg} isOpen={isOpen3} showDialog={showDialog3} setIsOpen={setIsOpen3} setShowDialog={setShowDialog3} refresh={props.refresh} setRefresh={props.setRefresh} updateApplicants={updateApplicants} updateApplicantsReco={updateApplicantsReco} /> : <div style={{ display: "none" }}></div>}
 
             <div id='rightUp'>
@@ -343,6 +343,11 @@ const RightSideDown = (props) => {
                     <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay3(true)}>
                         <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
                         <div id='approve'>Send offer letter</div>
+                    </button>
+
+                    <button id='recommend' disabled={selected.length > 0 ? false : true} onClick={() => openDialog3()}>
+                        <FontAwesomeIcon icon={faCheckDouble}></FontAwesomeIcon>
+                        <div id='approve'>Recommend</div>
                     </button>
 
                     <button id='deny' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay2(true)}>

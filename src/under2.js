@@ -186,23 +186,23 @@ const RightSideDown = (props) => {
         try {
             for (const applicant of selected) {
                 applicant.programme = update
-
+                console.log(update)
                 const response = await fetch(`https://mongodb-5-7rnl.onrender.com/undergraduate/underApplyReco/${applicant._id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ programme: update })
+                    body: JSON.stringify({ "academicDetails.0.programme": update })
                 })
 
                 if (!response.ok) {
+
                 } else {
                     const updatedData = await response.json()
                     refreshed()
                     setSelected([])
                     unCheckAll()
-                    saveHistory(applicant, update, reason, additionalText)
-
+                    //saveHistory(applicant, update,reason,additionalText)
                 }
             }
 
@@ -341,6 +341,11 @@ const RightSideDown = (props) => {
                     <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay3(true)}>
                         <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
                         <div id='approve'>Send offer letter</div>
+                    </button>
+
+                     <button id='recommend' disabled={selected.length > 0 ? false : true} onClick={() => openDialog3()}>
+                        <FontAwesomeIcon icon={faCheckDouble}></FontAwesomeIcon>
+                        <div id='approve'>Recommend</div>
                     </button>
 
                     <button id='deny' disabled={selected.length > 0 ? false : true} onClick={() => setOverlay2(true)}>
