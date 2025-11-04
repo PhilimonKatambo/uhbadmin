@@ -303,6 +303,8 @@ const SendOfferGen = (props) => {
             {/* {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>} */}
             <ViewOffer prog={prog} checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} form={form} refresh={props.refresh} setRefresh={props.setRefresh} subject={subject} message={message} />
 
+            
+
             <div id='sendEmail' ref={dialogRef}>
                 <h2 id='sendTitle'>📧 Send Offers</h2>
 

@@ -3,7 +3,7 @@ import './css/history.css'
 import './css/users.css'
 import { LeftSideBar } from './dashboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faGreaterThanEqual, faPlus, faRefresh, faSearch, faTrashCan, faUser, faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faEyeSlash, faGreaterThanEqual, faPlus, faRefresh, faSearch, faTrashCan, faUser, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { animate, stagger } from "animejs";
 import $ from 'jquery'
 import Dialog from './dialog'
@@ -147,8 +147,8 @@ const Users = () => {
             <LeftSideBar />
             <div id='rightSideHis'>
                 <div id='filter'>
-                    <div id='accordion' style={{justifyContent:"space-between"}}>
-                        <div style={{display:"flex",gap:"10px"}}>
+                    <div id='accordion' style={{ justifyContent: "space-between" }}>
+                        <div style={{ display: "flex", gap: "10px" }}>
                             <div>Filter</div>
                             <FontAwesomeIcon icon={faGreaterThanEqual}></FontAwesomeIcon>
                         </div>
@@ -244,8 +244,8 @@ const UsersCard = (props) => {
             if (!response.ok) {
                 setMessage(["Failed delete", "Can't delete news"])
                 openDialog()
-            }else{
-                
+            } else {
+
             }
             props.setRefresh(prev => !prev);
         } catch (e) {
@@ -255,11 +255,12 @@ const UsersCard = (props) => {
     }
 
     const [checkOverlay2, setOverlay2] = useState(false)
+    const [showPass, setShowPass] = useState(false)
 
     return (
         <tr>
             {/* <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />  */}
-            <ViewUser checkOverlay2={checkOverlay2} setOverlay2={setOverlay2} User={User} deleteNews={deleteNews}/>
+            <ViewUser checkOverlay2={checkOverlay2} setOverlay2={setOverlay2} User={User} deleteNews={deleteNews} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
             <td><button id='viewMore' onClick={() => {
                 setOverlay2(true)
@@ -270,7 +271,10 @@ const UsersCard = (props) => {
             <td id='tdd' title={`${User?.surName}`}>{User?.surName}</td>
             <td id='tdd' title={`${User?.userId}`}>{User?.userId}</td>
             <td id='tdd' title={`${User?.userEmail}`}>{User?.userEmail}</td>
-            <td id='tdd' title={`${User?.userPassword}`}>{User?.userPassword}</td>
+            <td id='tdd' title="Password">
+                <FontAwesomeIcon icon={showPass ? faEyeSlash : faEye} onClick={()=> setShowPass(!showPass)}></FontAwesomeIcon>
+                {showPass ? User?.userPassword : "XXXXXXXX"}
+            </td>
             <td id='tdd' title={`${User?.userRole}`}>{User?.userRole}</td>
             <td id='tdd' title={`${new Date(User?.createdAt).toLocaleString()}`}>{new Date(User?.createdAt).toLocaleString()}</td>
             <td id='tdd'><FontAwesomeIcon icon={faTrashCan} id='delete2' onClick={() => deleteNews(User?._id)}></FontAwesomeIcon></td>
