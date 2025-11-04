@@ -50,9 +50,13 @@ const NewsPage = () => {
     }, [refresh])
 
     useEffect(() => {
-        const filtered = news2.filter(new1 => new1.metadata.category === category);
-        setNews(filtered);
-    }, [category, news2]);
+        if (category === "General") {
+            setNews(news2);
+        } else {
+            const filtered = news2.filter(new1 => new1.metadata.category === category);
+            setNews(filtered);
+        }
+    }, [category, news])
 
 
     const check = (main, sub) => {

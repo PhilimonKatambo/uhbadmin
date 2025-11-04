@@ -53,8 +53,8 @@ const ReceRight = () => {
                 const data = await response.json();
 
                 const sortedData = [...data].sort((a, b) =>
-                        new Date(b.createdAt) - new Date(a.createdAt)
-                    );
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
                 setApplicants2(sortedData);
                 setApplicants(sortedData);
                 const i = 0;
@@ -169,10 +169,10 @@ const ReceRight = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    operator:user.firstName+" "+user.surName,
+                    operator: user.firstName + " " + user.surName,
                     operatorId: user._id || "No operator",
                     operatorOn: selected._id,
-                    operatorOnName: selected.firstName+" "+selected.surname,
+                    operatorOnName: selected.firstName + " " + selected.surname,
                     operation: update,
                     operatedType: selected.form,
                     reason: reason1 ? reason1 : "Common reason",
@@ -273,7 +273,7 @@ const ReceRight = () => {
         <div id='rightSide'>
             {/* delete dialog */}
             <div style={{ display: isOpen2 ? "block" : "none" }}>
-                {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory}/>)}
+                {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory} />)}
             </div>
 
             <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"disapproval"} />
@@ -289,7 +289,7 @@ const ReceRight = () => {
                         <FontAwesomeIcon icon={faSearch} id='searchIcon'></FontAwesomeIcon>
                     </div>
                     <div id='ops'>
-                        <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Approved",document.getElementById("reas").value)}>
+                        <button id='accept' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Approved", document.getElementById("reas").value)}>
                             <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
                             <div id='approve'>Approve</div>
                         </button>
@@ -299,7 +299,7 @@ const ReceRight = () => {
                             <div id='approve'>Disapprove</div>
                         </button>
 
-                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive",document.getElementById("reas").value)}>
+                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive", document.getElementById("reas").value)}>
                             <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
                             <div id='approve'>Inactivate</div>
                         </button>
@@ -348,6 +348,8 @@ const ReceRight = () => {
                             </th>
                             <th>Surname</th>
                             <th>Email</th>
+                            <th>Level</th>
+                            <th>Programme</th>
                             <th>Gender</th>
                             <th>Nationality</th>
                             <th>Home Phone</th>
@@ -385,6 +387,8 @@ const ReceRight = () => {
                                             <td>{applicant.firstName}</td>
                                             <td>{applicant.surname}</td>
                                             <td>{applicant.email}</td>
+                                            <td>{applicant.form === "postgrad" ? "Postgraduate" : "Undergraduate"}</td>
+                                            <td>{applicant.form === "postgrad" ? applicant.programme : applicant.academicDetails?.[0].programme}</td>
                                             <td>{applicant.gender}</td>
                                             <td>{applicant.nationality}</td>
                                             <td>{applicant.phoneHome}</td>

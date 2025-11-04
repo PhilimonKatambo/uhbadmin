@@ -482,6 +482,8 @@ const RightSideDown = (props) => {
                         </th>
                         <th>Surname</th>
                         <th>Email</th>
+                        <th>Level</th>
+                        <th>Programme</th>
                         <th>Gender</th>
                         <th>Nationality</th>
                         <th>Home Phone</th>
