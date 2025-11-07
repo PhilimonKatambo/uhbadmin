@@ -326,6 +326,14 @@ td {
     color: #004ea1;
 }
 
+#editButts{
+  background-color: #004ea1;
+  color: #fcfbf8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 @keyframes l27 {
     100% {
         transform: rotate(1turn)

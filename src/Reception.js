@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './css/dashboard.css';
-import { fa1, faBan, faCheckDouble, faCheckToSlot, faCircleXmark, faComputer, faDeleteLeft, faEye, faEyeDropper, faGraduationCap, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { fa1, faBan, faCheckDouble, faCheckToSlot, faCircleXmark, faComputer, faDeleteLeft, faEye, faEyeDropper, faFileExcel, faGraduationCap, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { faFirstOrderAlt } from '@fortawesome/free-brands-svg-icons';
 import { useEffect, useRef, useState } from 'react';
@@ -14,6 +14,9 @@ import { animate, stagger } from "animejs";
 import Delete2 from './delete';
 import SendDenial from './denial';
 import { useSelector } from 'react-redux';
+import * as XLSX from "xlsx"
+
+
 
 const Reception = () => {
     return (
@@ -267,8 +270,6 @@ const ReceRight = () => {
         setSelected([]);
     }
 
-
-
     return (
         <div id='rightSide'>
             {/* delete dialog */}
@@ -299,10 +300,11 @@ const ReceRight = () => {
                             <div id='approve'>Disapprove</div>
                         </button>
 
-                        <button id='disapprove' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive", document.getElementById("reas").value)}>
+                        <button id='innactive' disabled={selected.length > 0 ? false : true} onClick={() => updateApplicants("Inactive", document.getElementById("reas").value)}>
                             <FontAwesomeIcon icon={faCircleXmark}></FontAwesomeIcon>
                             <div id='approve'>Inactivate</div>
                         </button>
+
 
                         <button id='delete' disabled={selected.length > 0 ? false : true} onClick={() => {
                             setMessage2(["Confirm", `Are your sure, deleting ${selected.length === 1 ? "1 applicant" : selected.length + " applicants"} `]);
@@ -321,6 +323,10 @@ const ReceRight = () => {
                         <button id='butts' onClick={() => setStatus("Approved")} style={{ color: status1 === "Approved" ? "#25517e" : "grey" }}>Approved</button>
                         <button id='butts' onClick={() => setStatus("Disapproved")} style={{ color: status1 === "Disapproved" ? "#25517e" : "grey" }}>Disapproved</button>
                         <FontAwesomeIcon icon={faRefresh} ref={reload} onClick={refreshed} id='refresh'></FontAwesomeIcon>
+                        <button id='excel' disabled={selected.length > 0 ? false : true} onClick={() => ExportExcel(selected)}>
+                            <FontAwesomeIcon icon={faFileExcel}></FontAwesomeIcon>
+                            <div id='approve'>Excel</div>
+                        </button>
                     </div>
                     <div id='search1'>
                         <input type='text' id='reas' placeholder='Reason for operation!' ></input>
@@ -407,4 +413,12 @@ const ReceRight = () => {
     )
 }
 
+const ExportExcel = (data, type) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, "UHBapplicants");
+    XLSX.writeFile(workbook, "UHBapplicants.xlsx");
+}
+
+export { ExportExcel }
 export default Reception

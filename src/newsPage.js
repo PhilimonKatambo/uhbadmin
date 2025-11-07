@@ -260,7 +260,7 @@ const NewsCards = (props) => {
                     <ReadNews checkOverlay={checkOverlay} setOverlay={setOverlay} news={props.news} file={file} fileType={fileType} updateReaction={updateReaction} deleteNews={deleteNews} reactions={reactions} like={like} dislike={dislike} setLike={setLike} setDislike={setDislike} />
                     <div id="newsMore2">
                         <div id="newsTitle2">
-                            <div>{news.metadata.title}</div>
+                            <div id='newssT'>{news.metadata.title}</div>
                             <div id='uploadDate'>{new Date(news.uploadDate).toLocaleString()}</div>
                         </div>
                         <div id="newsContent">

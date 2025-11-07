@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './css/dashboard.css';
 import { fa1, faAddressCard, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faGraduationCap, faHeading, faHeadSideCough, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
-import { faCheckSquare, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
+import { faCheckSquare, faFileExcel, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { faFirstOrderAlt } from '@fortawesome/free-brands-svg-icons';
 import { useEffect, useRef, useState } from 'react';
 import Dialog, { RecoDialog } from './dialog';
@@ -9,7 +9,7 @@ import ViewApplicant from './viewApplicant';
 import $ from "jquery"
 import "jquery-ui-bundle";
 import "jquery-ui-bundle/jquery-ui.css";
-import Reception from './Reception';
+import Reception, { ExportExcel } from './Reception';
 import { useNavigate } from 'react-router-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core';
 import Delete2 from './delete';
@@ -354,6 +354,12 @@ const RightSideDown = (props) => {
                         <FontAwesomeIcon icon={faBan}></FontAwesomeIcon>
                         <div id='approve'>Deny</div>
                     </button>
+
+
+                    {/* <button id='excel' disabled={selected.length > 0 ? false : true} onClick={() => ExportExcel(selected)}>
+                        <FontAwesomeIcon icon={faFileExcel}></FontAwesomeIcon>
+                        <div id='approve'>Excel</div>
+                    </button> */}
                     <button id='delete' disabled={selected.length > 0 ? false : true} onClick={() => {
                         setMessage2(["Confirm", `Are your sure, deleting ${selected.length === 1 ? "1 applicant" : selected.length + " applicants"} `]);
                         openDialog2()
@@ -373,6 +379,10 @@ const RightSideDown = (props) => {
                     <button id='butts' onClick={() => setStatus("Recommended")} style={{ color: status1 === "Recommended" ? "#25517e" : "grey" }}>Recommended</button>
                     <button id='butts' onClick={() => setStatus("Denied")} style={{ color: status1 === "Denied" ? "#25517e" : "grey" }}>Denied</button>
                     <FontAwesomeIcon icon={faRefresh} ref={reload} onClick={refreshed} id='refresh'></FontAwesomeIcon>
+                    <button id='excel' disabled={selected.length > 0 ? false : true} onClick={() => ExportExcel(selected)}>
+                        <FontAwesomeIcon icon={faFileExcel}></FontAwesomeIcon>
+                        <div id='approve'>Excel</div>
+                    </button>
                 </div>
                 <div id='otherRight'>
                     {selected.length} Selected
@@ -397,6 +407,8 @@ const RightSideDown = (props) => {
                         </th>
                         <th>Surname</th>
                         <th>Email</th>
+                        <th>Level</th>
+                        <th>Programme</th>
                         <th>Gender</th>
                         <th>Nationality</th>
                         <th>Home Phone</th>
@@ -434,6 +446,9 @@ const RightSideDown = (props) => {
                                         <td>{applicant.firstName}</td>
                                         <td>{applicant.surname}</td>
                                         <td>{applicant.email}</td>
+                                        <td>{applicant.form === "postgrad" ? "Postgraduate" : "Undergraduate"}</td>
+                                        <td>{applicant.form === "postgrad" ? applicant.programme : applicant.academicDetails?.[0].programme}</td>
+
                                         <td>{applicant.gender}</td>
                                         <td>{applicant.nationality}</td>
                                         <td>{applicant.phoneHome}</td>

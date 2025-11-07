@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './css/dashboard.css';
-import { fa1, faAddressCard, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faGraduationCap, faHeading, faHeadSideCough, faHistory, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { fa1, faAddressCard, faBan, faCheckDouble, faCheckToSlot, faComputer, faEye, faEyeDropper, faFileExcel, faGraduationCap, faHeading, faHeadSideCough, faHistory, faRefresh, faRightFromBracket, faSearch, faSquareCheck, faTrashCan, faUserGraduate, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare, faNewspaper, faThumbsDown } from '@fortawesome/free-regular-svg-icons';
 import { faFirstOrderAlt } from '@fortawesome/free-brands-svg-icons';
 import { useEffect, useRef, useState } from 'react';
@@ -9,7 +9,7 @@ import ViewApplicant from './viewApplicant';
 import $ from "jquery"
 import "jquery-ui-bundle";
 import "jquery-ui-bundle/jquery-ui.css";
-import Reception from './Reception';
+import Reception, { ExportExcel } from './Reception';
 import { useNavigate, useParams } from 'react-router-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core';
 import Delete2 from './delete';
@@ -107,16 +107,16 @@ const LeftSideBar = () => {
                         </div>
                     </div>
 
-                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/News") }}  >
+                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none" }} onClick={() => { navigate("/News") }}  >
                         <FontAwesomeIcon icon={faNewspaper} id='icon'></FontAwesomeIcon>
                         <div id='secWord'>Manage News</div>
                     </div>
 
-                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/Users") }}>
+                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none" }} onClick={() => { navigate("/Users") }}>
                         <FontAwesomeIcon icon={faUsers} id='icon'></FontAwesomeIcon>
                         <div id='secWord'>Manage users</div>
                     </div>
-                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none"}} onClick={() => { navigate("/History") }}>
+                    <div id='section' style={{ display: user.userRole === "Superior" ? "flex" : "none" }} onClick={() => { navigate("/History") }}>
                         <FontAwesomeIcon icon={faHistory} id='icon'></FontAwesomeIcon>
                         <div id='secWord'>History</div>
                     </div>
@@ -281,7 +281,7 @@ const RightSideDown = (props) => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    operator:user.firstName+" "+user.surName,
+                    operator: user.firstName + " " + user.surName,
                     operatorId: user._id,
                     operatorOn: applicant._id,
                     operatorOnName: applicant.firstName + " " + applicant.surname,
@@ -415,7 +415,7 @@ const RightSideDown = (props) => {
             <SendDenial selected={selected} setSelected={setSelected} setOverlay2={setOverlay2} checkOverlay2={checkOverlay2} updateApplicants={updateApplicants} method={"denial"} />
             <ViewApplicant checkOverlay={checkOverlay} setOverlay={setOverlay} applicant={view} refresh={props.refresh} setRefresh={props.setRefresh} />
             {showDialog ? <Dialog msg={msg} isOpen={isOpen} showDialog={showDialog} setIsOpen={setIsOpen} setShowDialog={setShowDialog} /> : <div style={{ display: "none" }}></div>}
-            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory}/>)}
+            {showDialog2 && (<Delete2 isOpen2={isOpen2} msg2={msg2} setShowDialog2={setShowDialog2} setIsOpen2={setIsOpen2} setMessage2={setMessage2} selected={selected} setLoader={setLoader} openDialog={openDialog} setMessage={setMessage} setRefresh={setRefresh} setSelected={setSelected} saveHistory={saveHistory} />)}
             {showDialog3 ? <RecoDialog msg={msg} isOpen={isOpen3} showDialog={showDialog3} setIsOpen={setIsOpen3} setShowDialog={setShowDialog3} refresh={props.refresh} setRefresh={props.setRefresh} updateApplicants={updateApplicants} updateApplicantsReco={updateApplicantsReco} /> : <div style={{ display: "none" }}></div>}
 
             <div id='rightUp'>
@@ -458,6 +458,10 @@ const RightSideDown = (props) => {
                     <button id='butts' onClick={() => setStatus("Recommended")} style={{ color: status1 === "Recommended" ? "#25517e" : "grey" }}>Recommended</button>
                     <button id='butts' onClick={() => setStatus("Denied")} style={{ color: status1 === "Denied" ? "#25517e" : "grey" }}>Denied</button>
                     <FontAwesomeIcon icon={faRefresh} ref={reload} onClick={refreshed} id='refresh'></FontAwesomeIcon>
+                    <button id='excel' disabled={selected.length > 0 ? false : true} onClick={() => ExportExcel(selected)}>
+                        <FontAwesomeIcon icon={faFileExcel}></FontAwesomeIcon>
+                        <div id='approve'>Excel</div>
+                    </button>
                 </div>
                 <div id='otherRight'>
                     {selected.length} Selected
@@ -521,6 +525,8 @@ const RightSideDown = (props) => {
                                         <td>{applicant.firstName}</td>
                                         <td>{applicant.surname}</td>
                                         <td>{applicant.email}</td>
+                                        <td>{applicant.form === "postgrad" ? "Postgraduate" : "Undergraduate"}</td>
+                                        <td>{applicant.form === "postgrad" ? applicant.programme : applicant.academicDetails?.[0].programme}</td>
                                         <td>{applicant.gender}</td>
                                         <td>{applicant.nationality}</td>
                                         <td>{applicant.phoneHome}</td>
