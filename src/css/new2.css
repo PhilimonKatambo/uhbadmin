@@ -271,8 +271,16 @@
 
 #newssT{
     font-size: 1.5rem;
+    max-height: 100px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    transition: all .5s ease;
 }
 
+#newssT:hover{
+    height: fit-content;
+    font-size: 1rem;
+}
 #uploadDate{
     font-size: .8rem;
     background-color: #007bff;
@@ -291,9 +299,9 @@
 
 #shortNews2 {
     color: #fcfbf8;
-    font-weight: 500;
+    font-weight: normal;
     line-height: 1.5em;
-    max-height: 2.5em;
+    max-height: 4.5em;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
